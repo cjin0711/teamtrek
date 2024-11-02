@@ -1,6 +1,5 @@
 The content below is an example project proposal / requirements document. Replace the text below the lines marked "__TODO__" with details specific to your project. Remove the "TODO" lines.
 
-(__TODO__: your project name)
 
 # Team Trek 
 
@@ -13,7 +12,6 @@ TeamTrek is a group trip planner designed to help groups coordinate and plan the
 
 ## Data Model
 
-(__TODO__: a description of your application's data and their relationships to each other) 
 
 The application will store Users and Trips
 
@@ -80,8 +78,9 @@ An Example Trip
 
 ![trips slug](documentation/Trip_Details.png)
 
-## ![Site map](documentation/SiteMap.png)
 
+## Site Map
+![Site map](documentation/SiteMap.png)
 
 ## User Stories or Use Cases
 
