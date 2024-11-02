@@ -2,25 +2,28 @@ The content below is an example project proposal / requirements document. Replac
 
 (__TODO__: your project name)
 
-# Shoppy Shoperson 
+# Team Trek 
 
 ## Overview
 
 (__TODO__: a brief one or two paragraph, high-level description of your project)
 
-Remembering what to buy at the grocery store is waaaaay too difficult. Also, shopping for groceries when you're hungry leads to regrettable purchases. Sooo... that's where Shoppy Shoperson comes in!
-
-Shoppy Shoperson is a web app that will allow users to keep track of multiple grocery lists. Users can register and login. Once they're logged in, they can create or view their grocery list. For every list that they have, they can add items to the list or cross off items.
+TeamTrek is a group trip planner designed to help groups coordinate and plan their travel itineraries with ease. Users will be able to create trip groups, invite friends, build itineraries, and vote on activity preferences. The goal is to reduce the hassle of group planning by consolidating all trip logistics and group communication into one application.
 
 
 ## Data Model
 
 (__TODO__: a description of your application's data and their relationships to each other) 
 
-The application will store Users, Lists and Items
+The application will store Users and Trips
 
-* users can have multiple lists (via references)
-* each list can have multiple items (by embedding)
+* Users can have multiple friends (reference)
+* Users can have multiple Trips (reference)
+* Trips can have multiple participants (embedding)
+* Trips must have one organizer (reference)
+* Trips must have a name & destination (reference)
+* Trips must have a start and end date (reference)
+
 
 (__TODO__: sample documents)
 
@@ -28,23 +31,27 @@ An Example User:
 
 ```javascript
 {
-  username: "shannonshopper",
-  hash: // a password hash,
-  lists: // an array of references to List documents
+  "username": "traveler_0",
+  "hash": // a password hash
+  "email": "traveler_0@gmail.com",
+  "friends": ["username1", "username1"], 
+  "trips": ["trip1", "trip2"]
 }
+
 ```
 
-An Example List with Embedded Items:
+An Example Trip
 
 ```javascript
 {
-  user: // a reference to a User object
-  name: "Breakfast foods",
-  items: [
-    { name: "pancakes", quantity: "9876", checked: false},
-    { name: "ramen", quantity: "2", checked: true},
-  ],
-  createdAt: // timestamp
+  "organizer": "username1",
+  "name": "European Escape",
+  "destination": "Italy",
+  "dates": {
+    "start": "2025-04-11",
+    "end": "2025-04-25"
+  },
+  "participants": ["username2", "username3"]
 }
 ```
 
@@ -57,34 +64,34 @@ An Example List with Embedded Items:
 
 (__TODO__: wireframes for all of the pages on your site; they can be as simple as photos of drawings or you can use a tool like Balsamiq, Omnigraffle, etc.)
 
-/list/create - page for creating a new shopping list
+/login - login page
 
-![list create](documentation/list-create.png)
+![login](documentation/Login.png)
 
-/list - page for showing all shopping lists
+/trips - page showing all user trips
 
-![list](documentation/list.png)
+![trips](documentation/Trip_List.png)
 
-/list/slug - page for showing specific shopping list
+/trips/create - page for creating a new trip
 
-![list](documentation/list-slug.png)
+![trips create](documentation/Create_Trip.png)
 
-## Site map
+/trips/slug - page for viewing details of a specific trip, such as participants
 
-(__TODO__: draw out a site map that shows how pages are related to each other)
+![trips slug](documentation/Trip_Details.png)
 
-Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia/commons/2/20/Sitemap_google.jpg), but you can create one without the screenshots, drop shadows, etc. ... just names of pages and where they flow to.
+## ![Site map](documentation/SiteMap.png)
+
 
 ## User Stories or Use Cases
 
 (__TODO__: write out how your application will be used through [user stories](http://en.wikipedia.org/wiki/User_story#Format) and / or [use cases](https://en.wikipedia.org/wiki/Use_case))
 
-1. as non-registered user, I can register a new account with the site
-2. as a user, I can log in to the site
-3. as a user, I can create a new grocery list
-4. as a user, I can view all of the grocery lists I've created in a single list
-5. as a user, I can add items to an existing grocery list
-6. as a user, I can cross off items in an existing grocery list
+1. as a non-registered user, I can register a new account.
+2. as a user, I can log in to my account.
+3. as a user, I can create a new trip and invite friends.
+4. as a user, I can view, edit, and delete my trips.
+
 
 ## Research Topics
 
@@ -92,17 +99,10 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 * (5 points) Integrate user authentication
     * I'm going to be using passport for user authentication
-    * And account has been made for testing; I'll email you the password
-    * see <code>cs.nyu.edu/~jversoza/ait-final/register</code> for register page
-    * see <code>cs.nyu.edu/~jversoza/ait-final/login</code> for login page
-* (4 points) Perform client side form validation using a JavaScript library
-    * see <code>cs.nyu.edu/~jversoza/ait-final/my-form</code>
-    * if you put in a number that's greater than 5, an error message will appear in the dom
-* (5 points) vue.js
-    * used vue.js as the frontend framework; it's a challenging library to learn, so I've assigned it 5 points
+* (5 points) react.js
+    * used react.js as the frontend framework; it's a challenging library to learn, so I've assigned it 5 points
 
-10 points total out of 8 required points (___TODO__: addtional points will __not__ count for extra credit)
-
+10 points total out of 8 required points 
 
 ## [Link to Initial Main Project File](app.mjs) 
 
@@ -112,6 +112,7 @@ Here's a [complex example from wikipedia](https://upload.wikimedia.org/wikipedia
 
 (__TODO__: list any tutorials/references/etc. that you've based your code off of)
 
-1. [passport.js authentication docs](http://passportjs.org/docs) - (add link to source code that was based on this)
-2. [tutorial on vue.js](https://vuejs.org/v2/guide/) - (add link to source code that was based on this)
+1. [passport.js authentication docs](https://www.passportjs.org/docs/) 
+2. [tutorial on react.js](https://react.dev/learn) 
+3. [mongoose documentation](https://mongoosejs.com/docs/guide.html)
 
