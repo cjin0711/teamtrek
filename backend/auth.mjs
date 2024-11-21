@@ -1,31 +1,33 @@
 
 import passport from 'passport'
-import { LocalStrategy } from 'passport-local'
+import { Strategy } from 'passport-local'
 
 import bcrypt from 'bcryptjs';
 import { User } from './db.mjs'
 
 // Passport Local Strategy Configuration
-passport.use(new LocalStrategy(
-    async (username, password, done) => {
-        try {
-            const user = await User.findOne({ username });
-            if (!user) {
-                return done(null, false, { message: 'Incorrect username' });
-            }
+// passport.use(new LocalStrategy(
+//     async (username, password, done) => {
+//         try {
+//             const user = await User.findOne({ username });
+//             if (!user) {
+//                 return done(null, false, { message: 'Incorrect username' });
+//             }
             
-            const isMatch = await bcrypt.compare(password, user.passwordHash);
-            if (!isMatch) {
-                return done(null, false, { message: 'Incorrect password' });
-            }
+//             const isMatch = await bcrypt.compare(password, user.passwordHash);
+//             if (!isMatch) {
+//                 return done(null, false, { message: 'Incorrect password' });
+//             }
             
-            return done(null, user);
-        } catch (err) {
-            return done(err);
-        }
-    }
-));
+//             return done(null, user);
+//         } catch (err) {
+//             return done(err);
+//         }
+//     }
+// ));
 export const login = async (req, res) => {
+    res.json({ message: 'User logged in successfully'});
+    
     
     // try {
     //     passport.authenticate('local', (err, user) => {

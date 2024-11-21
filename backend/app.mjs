@@ -26,7 +26,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // ----- MongoDB Setup ----- // 
-mongoose.connect(process.env.MONG_URI)
+await mongoose.connect(process.env.MONG_URI)
   .then(() => {
     console.log('Connected to MongoDB successfully!');
   })
