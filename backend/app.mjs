@@ -1,5 +1,3 @@
-import { User } from './db.mjs'
-import { Trip } from './db.mjs'
 import * as auth from './auth.mjs'
 
 import express from 'express'
@@ -7,6 +5,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
+import passport from 'passport'
 
 dotenv.config();
 
@@ -22,13 +21,9 @@ app.listen(process.env.PORT, ()=> {
 
 // ----- Middleware ----- //
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.json());
-
-app.use((req, res, next) => {
-    console.log(req.path, req.method);
-    next();
-})
+app.use(passport.initialize());
+app.use(passport.session());
 
 // ----- MongoDB Setup ----- // 
 mongoose.connect(process.env.MONG_URI)
@@ -52,7 +47,6 @@ app.get('/api/register', (req, res) => {
 })
 
 app.post('/api/register', (req, res) => {
-  console.log('Recieved registration request');
   auth.register(req, res);
 });
 

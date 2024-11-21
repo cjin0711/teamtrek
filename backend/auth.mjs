@@ -1,19 +1,54 @@
-import passport from 'passport-local'
+
+import passport from 'passport'
+import { LocalStrategy } from 'passport-local'
+
 import bcrypt from 'bcryptjs';
 import { User } from './db.mjs'
 
-export const login = async (req, res) => {
-    const { username, password} = req.body;
-    if (username === 'admin' && password === 'admin') {
-        res.status(200).json({ message: 'Login successful' });
-    } else {
-        res.status(401).json({ message: 'Invalid credentials' });
+// Passport Local Strategy Configuration
+passport.use(new LocalStrategy(
+    async (username, password, done) => {
+        try {
+            const user = await User.findOne({ username });
+            if (!user) {
+                return done(null, false, { message: 'Incorrect username' });
+            }
+            
+            const isMatch = await bcrypt.compare(password, user.passwordHash);
+            if (!isMatch) {
+                return done(null, false, { message: 'Incorrect password' });
+            }
+            
+            return done(null, user);
+        } catch (err) {
+            return done(err);
+        }
     }
+));
+export const login = async (req, res) => {
+    
+    // try {
+    //     passport.authenticate('local', (err, user) => {
+    //         if (err) {
+    //             return res.status(500).json({ message: 'Error logging in' });
+    //         }
+    //         if (!user) {
+    //             return res.status(401).json({ message: 'Incorrect username or password' });
+    //         }
+    //         req.logIn(user, (err) => {
+    //             if (err) {
+    //                 return res.status(500).json({ message: 'Error logging in' });
+    //             }
+    //             return res.status(200).json({ message: 'User logged in successfully' });
+    //         });
+    //     })(req, res);
+    // } catch (error) {
+
+    // }
 }
 
 export const register = async (req, res) => {
     const {username, password, email} = req.body;
-    console.log('OOF');
 
     // Checks Username and Password Lengths
     if (username.length < 5) {
@@ -25,6 +60,10 @@ export const register = async (req, res) => {
     }
 
     try {
+        const existingUser = await User.findOne({ username: username });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username already taken' });
+        }
         // Generates salt and hash password
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);

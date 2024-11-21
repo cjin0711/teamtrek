@@ -38,14 +38,14 @@ const Register = () => {
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
                 <div className='username'>
-                    <label htmlFor="username">Username:</label><br/>
+                    <label htmlFor="username">New Username:</label><br/>
                     <input type="text" id="username" value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required 
                     />
                 </div>
                 <div className='password'>
-                    <label htmlFor="password">Password:</label><br/>
+                    <label htmlFor="password">New Password:</label><br/>
                     <input type="text" id="password" value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required 
