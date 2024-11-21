@@ -2,9 +2,10 @@ import mongoose from 'mongoose';
 
 // User Schema
 const UserSchema = new mongoose.Schema({
-  username: String,
-  passwordHash: String,
-  email: String,
+  username: { type: String, required: true },
+  passwordHash: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: String,
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   trips: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }]
 });
@@ -12,11 +13,11 @@ const UserSchema = new mongoose.Schema({
 // Trip Schema
 const TripSchema = new mongoose.Schema({
   organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  name: String,
-  destination: String,
+  name: { type: String, required: true },
+  destination: { type: String, required: true },
   dates: {
-    start: Date,
-    end: Date
+    start: { type: Date, required: true },
+    end: { type: Date, required: true }
   },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
