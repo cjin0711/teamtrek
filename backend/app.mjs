@@ -22,8 +22,10 @@ app.listen(process.env.PORT, ()=> {
 // ----- Middleware ----- //
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(auth.sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 // ----- MongoDB Setup ----- // 
 await mongoose.connect(process.env.MONG_URI)
