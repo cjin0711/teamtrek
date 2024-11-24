@@ -7,6 +7,7 @@ const Login = () => {
     // username is state variable & setUsername is function used to modify its value
     const [username, setUsername] = useState("Username");  // initialized to "Username"
     const [password, setPassword] = useState("Password");  // initialized to "Password"
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Prevents page reload
@@ -29,6 +30,12 @@ const Login = () => {
 
             const data = await response.json();
             console.log(data);
+            if (data.authorized === false) {
+                navigate('/login');
+            }
+            else {
+                navigate('/dashboard');
+            }
         }
         catch(error) {
             console.log(error);
@@ -50,7 +57,7 @@ const Login = () => {
                 </div>
                 <div className='password'>
                     <label htmlFor="password">Password:</label><br/>
-                    <input type="text" id="password" value={password} 
+                    <input type="password" id="password" value={password} 
                         onClick={(e) => setPassword('')}
                         onChange={(e) => setPassword(e.target.value)} 
                         required 

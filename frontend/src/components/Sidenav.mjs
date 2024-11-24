@@ -15,6 +15,9 @@ const Sidenav = () => {
             <Link to="/settings">
                 <h3>Settings</h3>
             </Link>
+            <Link to="/create">
+                <h3>Create Trip</h3>
+            </Link>
         </div>
     )
 }

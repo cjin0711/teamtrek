@@ -46,7 +46,7 @@ const Register = () => {
                 </div>
                 <div className='password'>
                     <label htmlFor="password">New Password:</label><br/>
-                    <input type="text" id="password" value={password}
+                    <input type="password" id="password" value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required 
                     />

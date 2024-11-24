@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const [trips, setTrips] = useState([]);
@@ -8,7 +9,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchTrips = async () => {
             try {
-                const response = await fetch('/api/user/trips');
+                const response = await fetch('/api/dashboard');
                 if (!response.ok) {
                     throw new Error('Failed to fetch trips');
                 }

@@ -5,45 +5,62 @@ import Home from './pages/Home.mjs'
 import Login from './pages/Login.mjs'
 import Register from './pages/Register.mjs'
 import Navbar from './components/Navbar.mjs'
-import SideNav from './components/SideNav.mjs'
+import Sidenav from './components/Sidenav.mjs'
+import Dashboard from './pages/Dashboard.mjs'
+import Create from './pages/Create.mjs'
 
 
-function App() {
+function SidenavWrapper() {
   // for getting user's current route location
   const location = useLocation();
 
   // routes where sidenav bar should not be displayed
   const nonAuthRoutes = ['/', '/login', '/register'];
 
+  if (nonAuthRoutes.includes(location.pathname)) {
+    return null;
+  }
+
+  return <Sidenav />;
+}
+
+function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Navbar/>
-        {/* Conditional checking for sidenav display */}
-        {!nonAuthRoutes.includes(location.pathname) && <SideNav/>}
-        <div className="pages">
-          <Routes>
+        <div className = "content">
+          <SidenavWrapper/>
+          <div className="pages">
+            <Routes>
 
-            {/* HOME ROUTE */}
-            <Route path="/"
-              element={<Home/>}
-            />
+              {/* HOME ROUTE */}
+              <Route path="/"
+                element={<Home/>}
+              />
 
-            {/* LOGIN ROUTE */}
-            <Route path="/login"
-              element={<Login/>}
-            />
+              {/* LOGIN ROUTE */}
+              <Route path="/login"
+                element={<Login/>}
+              />
 
-            {/* REGISTER ROUTE */}
-            <Route path="/register"
-              element={<Register/>}
-            />
+              {/* REGISTER ROUTE */}
+              <Route path="/register"
+                element={<Register/>}
+              />
 
-            {/* DASHBOARD ROUTE */}
-            <Route path="/dashboard"
-              element={<Dashboard/>}
-            />
-          </Routes>
+              {/* DASHBOARD ROUTE */}
+              <Route path="/dashboard"
+                element={<Dashboard/>}
+              />
+
+              {/* CREATE ROUTE */}
+              <Route path="/create"
+                element={<Create/>}
+              />
+
+            </Routes>
+          </div>
         </div>
       </BrowserRouter>
     </div>

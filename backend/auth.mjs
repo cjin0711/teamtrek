@@ -1,4 +1,3 @@
-
 import passport from 'passport'
 import LocalStrategy from 'passport-local'
 import express from 'express'
@@ -14,9 +13,17 @@ export const sessionMiddleware = session({
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 1 * 60 * 60 * 1000 // 1 hour
     }
 });
+
+// // Middleware to ensure user is authenticated
+// export const ensureAuthenticated = (req, res) => {
+//     if (req.isAuthenticated()) {
+//         return next(); // Proceed to the next middleware or route handler
+//     }
+//     res.status(401).json({ message: 'Unauthorized access', authorized: false }); // Send a 401 response
+// };
 
 // used to serialize the user for the session
 passport.serializeUser((user, done) => {
@@ -71,9 +78,10 @@ export const login = async (req, res) => {
             }
             req.login(user, (err) => {
                 if (err) {
-                    return res.status(500).json({ message: 'Error logging in' });
+                    return res.status(401).json({ authorized: false });
                 }
-                return res.status(200).json({ message: 'User logged in successfully' });
+                console.log('User logged in:', user);
+                return res.status(200).json({ message: 'User logged in successfully', user: req.user, authorized: true });
             });
         })(req, res);
     } catch (error) {

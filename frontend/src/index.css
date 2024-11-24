@@ -26,6 +26,7 @@ a:visited {
 
 /* ----- Login / Register ----- */
 .login, .register {
+  display:block;
   padding: 10px 30px 30px 30px;
   width: 400px;
   height: auto;
@@ -65,7 +66,10 @@ a:visited {
 } 
 
 .login input[id="username"], .login input[id="password"],
-.register input[id="username"], .register input[id="password"], .register input[id="email"]{
+.register input[id="username"], .register input[id="password"], 
+.register input[id="email"], .create input[id='name'],
+.create input[id='destination'], .create input[id='startDate'],
+.create input[id='endDate'] {
   width: 100%; /* Full width */
   padding: 12px; /* Padding for larger clickable area */
   font-size: 16px; /* Larger font size */
@@ -73,7 +77,7 @@ a:visited {
   box-shadow: 2px 2px;
 }
 
-.login button[type="submit"], .register button[type="submit"] {
+.login button[type="submit"], .register button[type="submit"], .create button[type="submit"] {
   width: 80%; /* Full width */
   padding: 14px 20px; /* Padding for larger clickable area */
   font-size: 16px; /* Larger font size */
@@ -86,6 +90,36 @@ a:visited {
   box-shadow: 3px 3px black;
  
 }
+
+/* ----- Sidenav ----- */
+.sidenav {
+  min-height: 85vh;
+  width: 18vw;
+  background-color: #066706;
+  padding-top: 10px;
+  text-align: center;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+} 
+
+/* ----- Create ----- */
+.create {
+  padding: 30px 30px 30px 30px;
+  width: 75vw;
+  height: auto;
+  background-color: #389a38;
+  box-shadow: 3px 3px;
+  margin: 10px auto auto auto;
+}
+
+/* ----- App ----- */
+
+.content {
+  display:flex;
+  flex-direction: row;
+}
+
 
 .App {
   background-color: #5fb45f;
