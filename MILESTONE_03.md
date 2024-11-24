@@ -3,32 +3,33 @@ Milestone 03
 
 Repository Link
 ---
-(TODO: add the link to your repository in github, such as, https://github.com/[COURSE]/[REPO_NAME])
+(https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711)
 
 URL for deployed site 
 ---
-(TODO: add url for your dpeloyed site; should be in this format http://linserv1.cims.nyu.edu:YOUR_PORT_NUMBER)
+http://linserv1.cims.nyu.edu:12159
 
-URL for form 1 (from previous milestone) 
+URL for form 1 & 2
 ---
-(TODO: add link to a functioning form)
+Video Demo Below:
+https://drive.google.com/file/d/1z_ODvWqY9z8twqKRURso9nwkIReprk1c/view?usp=sharing
+
 
 Special Instructions for Form 1
 ---
-(TODO: if your app requires special instructions to use or if your app requires authentication, add information here; otherwise, leave blank)
+Login Page
+Username: cjin0711
+Password: Tinajj0711
 
-URL for form 2 (for current milestone)
----
-(TODO: if applicable, add link to page that shows results of submitting form)
-
-Special Instructions for Form 2
----
-(TODO: if your app requires special instructions to use or if your app requires authentication, add information here; otherwise, leave blank)
 
 URL(s) to github repository with commits that show progress on research
 --- 
-(TODO: add link to github url that shows line or lines of code that demonstrate continued progress on research topics)
+Passport JS
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/backend/auth.mjs#L10-L69
+
+React JS
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/frontend/src/App.mjs#L1-L70
 
 References 
 ---
-(TODO: if applicable, links to annotated lines of code in github repository that were based off of tutorials / articles / sample projects)
+N/A
