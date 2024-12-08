@@ -8,6 +8,7 @@ import Navbar from './components/Navbar.mjs'
 import Sidenav from './components/Sidenav.mjs'
 import Dashboard from './pages/Dashboard.mjs'
 import Create from './pages/Create.mjs'
+import TripDetails from './pages/TripDetails.mjs'
 
 
 function SidenavWrapper() {
@@ -58,6 +59,9 @@ function App() {
               <Route path="/create"
                 element={<Create/>}
               />
+
+              {/* TRIP DETAILS ROUTE */}
+              <Route path="/trip/:id" element={<TripDetails />} />
 
             </Routes>
           </div>

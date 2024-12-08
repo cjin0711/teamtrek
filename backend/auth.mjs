@@ -17,13 +17,14 @@ export const sessionMiddleware = session({
     }
 });
 
-// // Middleware to ensure user is authenticated
-// export const ensureAuthenticated = (req, res) => {
-//     if (req.isAuthenticated()) {
-//         return next(); // Proceed to the next middleware or route handler
-//     }
-//     res.status(401).json({ message: 'Unauthorized access', authorized: false }); // Send a 401 response
-// };
+// Middleware to ensure user is authenticated
+export const ensureAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next(); // Proceed to the next middleware or route handler
+    }
+    console.log("NO AUTHORIZED OOF")
+    return res.status(401).json({ message: 'Unauthorized access', authorized: false }); // Send a 401 response
+};
 
 // used to serialize the user for the session
 passport.serializeUser((user, done) => {
@@ -67,27 +68,29 @@ passport.use(new LocalStrategy(
         }
     }
 ));
-export const login = async (req, res) => {
-    try {
-        passport.authenticate('local', (err, user) => {
+export const login = async (req, res, next) => {
+    console.log("LOGIN FUNCTION CALLED");
+    passport.authenticate('local', (err, user) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error logging in' });
+        }
+        if (!user) {
+            return res.status(401).json({ message: 'Incorrect username or password', authorized: false });
+        }
+        req.login(user, (err) => {
             if (err) {
-                return res.status(500).json({ message: 'Error logging in' });
+                return res.status(401).json({ authorized: false });
             }
-            if (!user) {
-                return res.status(401).json({ message: 'Incorrect username or password' });
-            }
-            req.login(user, (err) => {
-                if (err) {
-                    return res.status(401).json({ authorized: false });
-                }
+            // console.log('User logged in:', user);
+            // return res.status(200).json({ message: 'User logged in successfully', user: req.user, authorized: true });
+            if (req.isAuthenticated()) {
                 console.log('User logged in:', user);
                 return res.status(200).json({ message: 'User logged in successfully', user: req.user, authorized: true });
-            });
-        })(req, res);
-    } catch (error) {
-        console.error('Error logging in user', error.message);
-        res.status(500).json({ message: 'Error logging in user' });
-    }
+            } else {
+                return res.status(401).json({ message: 'User authentication failed', authorized: false });
+            }
+        });
+    })(req, res, next);
 }
 
 export const register = async (req, res) => {

@@ -57,14 +57,24 @@ app.get('/api/login', (req, res) => {
   res.send("Hello");
 });
 
-app.post('/api/login', (req, res) => {
-  auth.login(req, res);
-  // if (!req.isAuthenticated()) {
-  //   return res.status(401).json({ authorized: false });
-  // }
+app.post('/api/login', (req, res, next) => {
+  auth.login(req, res, next);
 });
 
-app.get('/api/dashboard', async (req, res) => {
+app.post('/api/logout', (req, res) => {
+  req.logout((err) => {
+      if (err) {
+          console.error('Error during logout:', err);
+          return res.status(500).json({ message: 'Error logging out' });
+      }
+      req.session.destroy(() => {
+          res.clearCookie('connect.sid'); // Clear the session cookie
+          res.status(200).json({ message: 'Logged out successfully' });
+      });
+  });
+});
+
+app.get('/api/dashboard', auth.ensureAuthenticated, async (req, res) => {
   try {
     // Fetch the user from the database using the ID from the session
     const user = await User.findById(req.user._id).populate('trips'); // Populate the trips array
@@ -79,6 +89,44 @@ app.get('/api/dashboard', async (req, res) => {
     console.error('Error fetching trips:', error.message);
     res.status(500).json({ message: 'Server error' });
 }
+});
+
+app.get('/api/trip/:id', auth.ensureAuthenticated, async (req, res) => {
+  const tripId = req.params.id;
+  console.log('API CALL FOR ID: ', tripId);
+  try {
+      const trip = await Trip.findById(tripId);
+      if (!trip) {
+          return res.status(404).json({ message: 'Trip not found' });
+      }
+      res.json({trip: trip});
+  } catch (error) {
+      console.error('Error fetching trip:', error.message);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.delete('/api/delete/:id', auth.ensureAuthenticated, async (req, res) => {
+  const tripId = req.params.id;
+  try {
+      // Find the trip by ID
+      const trip = await Trip.findById(tripId);
+      if (!trip) {
+          return res.status(404).json({ message: 'Trip not found' });
+      }
+
+      // Check if the user is the organizer of the trip
+      if (trip.organizer.toString() !== req.user._id.toString()) {
+          return res.status(403).json({ message: 'Unauthorized to delete this trip' });
+      }
+
+      // Delete the trip
+      await trip.deleteOne();
+      res.json({ message: 'Trip deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting trip:', error.message);
+      res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.post('/api/create' , async (req, res) => {

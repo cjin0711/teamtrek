@@ -26,7 +26,10 @@ a:visited {
 
 /* ----- Login / Register ----- */
 .login, .register {
-  display:block;
+  position: absolute;
+  top: 100px;
+  left: 400px;
+  right: auto;
   padding: 10px 30px 30px 30px;
   width: 400px;
   height: auto;
@@ -103,7 +106,7 @@ a:visited {
   border-color: black;
 } 
 
-/* ----- Create ----- */
+/* ----- Create Trip ----- */
 .create {
   padding: 30px 30px 30px 30px;
   width: 75vw;
@@ -113,10 +116,42 @@ a:visited {
   margin: 10px auto auto auto;
 }
 
+/* ------ Display Trips ----- */
+.dashboard, .trip-card {
+  margin: 10px 10px 10px 10px;
+}
+.trips-grid {
+  display: grid;
+  width: 1000px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+  background-color: #5fb45f;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.trip-card {
+  width: 300px;
+  height: 200px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+  padding: 5px 5px 5px 5px;
+  background-color: antiquewhite;
+  display: flex;
+} 
+
+.viewTrip {
+  width: 75px;
+  height: 50px;
+  margin: 50px auto 10px 50px;
+}
+
+
 /* ----- App ----- */
 
 .content {
-  display:flex;
+  display: flex; 
   flex-direction: row;
 }
 

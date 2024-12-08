@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Create = () => {
 
@@ -6,10 +7,11 @@ const Create = () => {
     const [destination, setDestination] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    //const navigate = useNavigate();
+    const [description, setDescription] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        //e.preventDefault();
         // Add form submission logic here
 
         try {
@@ -31,6 +33,8 @@ const Create = () => {
 
             const data = await response.json();
             console.log(data);
+            navigate('/dashboard');
+
         } catch (error) {
             console.log('No Trip Creation');
             console.error('Error:', error);
@@ -66,6 +70,13 @@ const Create = () => {
                     <label htmlFor="endDate">End Date:</label><br/>
                     <input type="date" id="endDate" value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
+                        required 
+                    />
+                </div>
+                <div className='tripDescription'>
+                    <label htmlFor="tripDescription">Description:</label><br/>
+                    <input type="text" id="tripDescription" value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         required 
                     />
                 </div>

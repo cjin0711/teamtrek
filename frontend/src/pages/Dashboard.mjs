@@ -5,15 +5,23 @@ const Dashboard = () => {
     const [trips, setTrips] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchTrips = async () => {
             try {
                 const response = await fetch('/api/dashboard');
-                if (!response.ok) {
+                if (!response.ok && response.status !== 401) {
                     throw new Error('Failed to fetch trips');
                 }
                 const data = await response.json();
+                console.log(`DATA: ${data}`);
+                if (data.authorized === false) {
+                    navigate('/login');
+                }
+                else {
+                    navigate('/dashboard');
+                }
                 setTrips(data.trips);
             } catch (error) {
                 setError(error.message);
@@ -23,7 +31,16 @@ const Dashboard = () => {
         };
 
         fetchTrips();
-    }, []);
+    }, [navigate]);
+
+    const handleView = async (id) => {
+        try {
+            navigate(`/trip/${id}`);
+        }
+        catch {
+            console.log('Error fetching trip details');
+        }
+    }
 
     if (loading) return <div>Loading trips...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -37,10 +54,17 @@ const Dashboard = () => {
                 ) : (
                     trips.map(trip => (
                         <div key={trip._id} className="trip-card">
-                            <h3>{trip.name}</h3>
-                            <p>Destination: {trip.destination}</p>
-                            <p>Start: {new Date(trip.dates.start).toLocaleDateString()}</p>
-                            <p>End: {new Date(trip.dates.end).toLocaleDateString()}</p>
+                            <div className="trip-info">
+                                <h3>{trip.name}</h3>
+                                <p>Destination: {trip.destination}</p>
+                                <p>Start: {new Date(trip.dates.start).toLocaleDateString()}</p>
+                                <p>End: {new Date(trip.dates.end).toLocaleDateString()}</p>
+                            </div>
+                            <div className="trip-actions">
+                                <button className='viewTrip' onClick={() => handleView(trip._id)}>
+                                    <h4>View</h4>
+                                </button>
+                            </div>
                         </div>
                     ))
                 )}
