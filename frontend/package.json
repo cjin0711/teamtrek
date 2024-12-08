@@ -1,4 +1,5 @@
 {
+  "allowedHosts": "all",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -18,10 +19,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "options": {
-    "allowedHosts": ["0.0.0.0", ".0.0.0.0"]
-  },
-  "allowedHosts": ["0.0.0.0", ".0.0.0.0"],
   "proxy": "http://linserv1.cims.nyu.edu:12159",
   "eslintConfig": {
     "extends": [
