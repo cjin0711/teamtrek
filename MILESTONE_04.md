@@ -47,7 +47,7 @@ Click Edit Profile Button and Enter Information and press Save
 
 First link to github line number(s) for constructor, HOF, etc.
 ---
-(TODO: add link to line number(s) here) 
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/frontend/src/pages/Dashboard.mjs#L55-L58
 
 Second link to github line number(s) for constructor, HOF, etc.
 ---
@@ -55,11 +55,11 @@ Second link to github line number(s) for constructor, HOF, etc.
 
 Short description for links above
 ---
-(TODO: describe what each link above is, one line each... for example: myFunction is a hof that retrieves json from a url, map is used to transform the Array of Person objects into an Array of strings that represents names)
+trip.map basically iterates through all the trips in the array and generates new div with info
 
 Link to github line number(s) for schemas (db.js or models folder)
 ---
-(TODO: add link to schemas)
+(https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/backend/db.mjs)
 
 Description of research topics above with points
 ---
@@ -68,7 +68,11 @@ Description of research topics above with points
 
 Links to github line number(s) for research topics described above (one link per line)
 ---
-(TODO: add link to github line number(s), one per line for research topics ... for example, if using auth/passport, link to auth.js or where bulk of auth code is)
+Passport JS
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/backend/auth.mjs#L10-L69
+
+React JS
+https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/frontend/src/App.mjs#L1-L70
 
 Optional project notes 
 --- 
@@ -77,4 +81,11 @@ https://drive.google.com/file/d/1I1rZ2ks31O4kEkp8r4CFkGQm-KEV9kWz/view?usp=shari
 
 Attributions
 ---
+Passport JS
+/backend/auth.mjs - https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/backend/auth.mjs#L10-L69
+
+React JS
+/frontend/Appmjs - https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/frontend/src/App.mjs#L1-L70
+
+
 (TODO:  list sources that you have based your code off of, 1 per line, with file name, a very short description, and an accompanying url... for example: routes/index.js - Authentication code based off of http://foo.bar/baz ... alternatively, if you have already placed annotations in your project, answer "See source code comments")
