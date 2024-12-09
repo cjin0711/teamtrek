@@ -82,10 +82,10 @@ https://drive.google.com/file/d/1I1rZ2ks31O4kEkp8r4CFkGQm-KEV9kWz/view?usp=shari
 Attributions
 ---
 Passport JS
-/backend/auth.mjs - https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/backend/auth.mjs#L10-L69
+/backend/auth.mjs - https://www.passportjs.org/tutorials/password/prompt/
 
 React JS
-/frontend/Appmjs - https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/master/frontend/src/App.mjs#L1-L70
+/frontend/Appmjs - https://react.dev/blog/2023/03/16/introducing-react-dev
 
 
 (TODO:  list sources that you have based your code off of, 1 per line, with file name, a very short description, and an accompanying url... for example: routes/index.js - Authentication code based off of http://foo.bar/baz ... alternatively, if you have already placed annotations in your project, answer "See source code comments")
