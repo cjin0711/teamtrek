@@ -19,7 +19,7 @@ URL for deployed site
 
 URL for form 1 (from previous milestone) 
 ---
-(TODO: add link to a functioning form)
+(https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/74fd5cc0c3aa7e263b2c2d9ace1fc6422e7fdd55/frontend/src/pages/Login.mjs#L43)
 
 Special Instructions for Form 1
 ---
@@ -29,7 +29,7 @@ Password: Tinajj0711
 
 URL for form 2 (for current milestone)
 ---
-(TODO: if applicable, add link to page that shows results of submitting form)
+(https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/74fd5cc0c3aa7e263b2c2d9ace1fc6422e7fdd55/frontend/src/pages/Create.mjs#L45)
 
 Special Instructions for Form 2
 ---
@@ -38,7 +38,7 @@ Enter Information and Click Create Trip Button
 
 URL for form 3 (from previous milestone) 
 ---
-(TODO: add link to a functioning form)
+(https://github.com/nyu-csci-ua-0467-001-002-fall-2024/final-project-cjin0711/blob/74fd5cc0c3aa7e263b2c2d9ace1fc6422e7fdd55/frontend/src/pages/Settings.mjs#L79)
 
 Special Instructions for Form 3
 ---
