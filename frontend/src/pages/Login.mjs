@@ -20,13 +20,8 @@ const Login = () => {
                     'Content-Type': 'application/json',
                 },
 
-                // What does this do?
                 body: JSON.stringify({ username, password }),
-
-            
-
             });
-
             const data = await response.json();
             console.log(data);
             if (data.authorized === false) {

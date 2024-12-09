@@ -47,7 +47,7 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard">
-            <h2>My Trips</h2>
+            <h1>My Trips</h1>
             <div className="trips-grid">
                 {trips.length === 0 ? (
                     <p>No trips found. Create your first trip!</p>
@@ -55,7 +55,7 @@ const Dashboard = () => {
                     trips.map(trip => (
                         <div key={trip._id} className="trip-card">
                             <div className="trip-info">
-                                <h3>{trip.name}</h3>
+                                <h2>{trip.name}</h2>
                                 <p>Destination: {trip.destination}</p>
                                 <p>Start: {new Date(trip.dates.start).toLocaleDateString()}</p>
                                 <p>End: {new Date(trip.dates.end).toLocaleDateString()}</p>

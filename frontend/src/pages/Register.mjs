@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,6 +29,7 @@ const Register = () => {
 
             const data = await response.json();
             console.log(data);
+            navigate('/login');
         } catch (error) {
             console.log('OH NOES');
             console.error('Error:', error);

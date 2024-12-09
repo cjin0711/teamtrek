@@ -6,7 +6,8 @@ const UserSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String },
-  socials: [{ url: { type: String } }],
+  bio: { type: String },
+  socials: { type: String},
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   trips: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }]
 });
@@ -20,7 +21,7 @@ const TripSchema = new mongoose.Schema({
     start: { type: Date, required: true },
     end: { type: Date, required: true }
   },
-  description: { type: String },
+  description: { type: String, required: true },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 

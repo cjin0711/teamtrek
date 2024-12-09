@@ -54,13 +54,12 @@ const TripDetails = () => {
 
     return (
         <div className="trip-details">
-            <h2>Trip Details</h2>
-            <div>Viewing details for trip ID: {id}</div>
             <div className="trip-info">
-                <h3>{trip.name}</h3>
+                <h1>{trip.name}</h1>
                 <p>Destination: {trip.destination}</p>
                 <p>Start: {new Date(trip.dates.start).toLocaleDateString()}</p>
                 <p>End: {new Date(trip.dates.end).toLocaleDateString()}</p>
+                <p>Description: {trip.description}</p>
                 <button onClick={() => handleDelete(trip._id)}>Delete Trip</button>
             </div>
         </div>

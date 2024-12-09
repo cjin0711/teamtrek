@@ -91,6 +91,58 @@ app.get('/api/dashboard', auth.ensureAuthenticated, async (req, res) => {
 }
 });
 
+// SELF PROFILE
+app.get('/api/profile/', auth.ensureAuthenticated, async (req, res) => {
+  const userId = req.user._id;
+  try {
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'Self Profile not found' });
+      }
+      res.json({ user: user });
+  } catch (error) {
+      console.error('Error fetching self profile:', error.message);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/api/user/:id', auth.ensureAuthenticated, async (req, res) => {
+  const userId = req.params.id;
+  try {
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.json({ user: user });
+  } catch (error) {
+      console.error('Error fetching user:', error.message);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => {
+  const userId = req.params.id;
+  const { bio, email, phone, socials } = req.body;
+  try {
+      const user =  await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      } 
+
+      user.bio = bio;
+      user.email = email;
+      user.phone = phone;
+      user.socials = socials;
+
+      await user.save();
+      res.status(200).json({ message: 'User updated successfully', user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while updating user information' });
+  }
+
+});
+
 app.get('/api/trip/:id', auth.ensureAuthenticated, async (req, res) => {
   const tripId = req.params.id;
   console.log('API CALL FOR ID: ', tripId);
@@ -129,8 +181,8 @@ app.delete('/api/delete/:id', auth.ensureAuthenticated, async (req, res) => {
   }
 });
 
-app.post('/api/create' , async (req, res) => {
-  const {name, destination, startDate, endDate} = req.body;
+app.post('/api/create' , auth.ensureAuthenticated, async (req, res) => {
+  const {name, destination, startDate, endDate, description} = req.body;
   try {
         // Creates new Trip
         const trip = new Trip({
@@ -140,7 +192,8 @@ app.post('/api/create' , async (req, res) => {
           dates : {
             start: startDate,
             end: endDate
-          }
+          },
+          description: description
       });
 
       await trip.save();

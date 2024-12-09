@@ -11,16 +11,14 @@ const Create = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        //e.preventDefault();
-        // Add form submission logic here
-
+        e.preventDefault();
         try {
             const response = await fetch('/api/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, destination, startDate, endDate }),
+                body: JSON.stringify({ name, destination, startDate, endDate, description }),
             });
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);
@@ -29,7 +27,7 @@ const Create = () => {
                 const errorText = await response.text();
                 throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-            console.log(name, destination, startDate, endDate);
+            console.log(name, destination, startDate, endDate, description);
 
             const data = await response.json();
             console.log(data);
@@ -43,7 +41,7 @@ const Create = () => {
 
     return (
         <div className="create">
-            <h2>Create a Trip</h2>
+            <h1>Create a Trip</h1>
             <form onSubmit={handleSubmit}>
                 <div className='tripName'>
                     <label htmlFor="name">Trip Name:</label><br/>
@@ -72,7 +70,7 @@ const Create = () => {
                         onChange={(e) => setEndDate(e.target.value)}
                         required 
                     />
-                </div>
+                </div> 
                 <div className='tripDescription'>
                     <label htmlFor="tripDescription">Description:</label><br/>
                     <input type="text" id="tripDescription" value={description}

@@ -9,7 +9,8 @@ import Sidenav from './components/Sidenav.mjs'
 import Dashboard from './pages/Dashboard.mjs'
 import Create from './pages/Create.mjs'
 import TripDetails from './pages/TripDetails.mjs'
-
+import Profile from './pages/Profile.mjs'
+import Settings from './pages/Settings.mjs'
 
 function SidenavWrapper() {
   // for getting user's current route location
@@ -61,8 +62,20 @@ function App() {
               />
 
               {/* TRIP DETAILS ROUTE */}
-              <Route path="/trip/:id" element={<TripDetails />} />
+              <Route path="/trip/:id" 
+                element={<TripDetails />} 
+              />
 
+              {/* PROFILE ROUTE */}
+              <Route path="/profile/:id"
+                element={<Profile/>}
+              />
+
+              {/* SETTINGS ROUTE */}
+              <Route path="/profile/:id/settings"
+                element={<Settings/>}
+              />
+              
             </Routes>
           </div>
         </div>
