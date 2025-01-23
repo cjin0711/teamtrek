@@ -74,6 +74,21 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
+// FRIENDS LIST
+app.get('/api/friends', auth.ensureAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate('friends');
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ authorized: true, friends: user.friends });
+  } catch (error) {
+    console.error('Error fetching friends:', error.message);
+    res.status(500).json({ message: 'Server error' });
+}
+});
+
+// DASHBOARD
 app.get('/api/dashboard', auth.ensureAuthenticated, async (req, res) => {
   try {
     // Fetch the user from the database using the ID from the session

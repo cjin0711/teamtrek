@@ -43,12 +43,13 @@ const Settings = () => {
         };
 
         fetchUser();
-    }, [navigate]);
+    }, [id, navigate]);
 
     if (loading) return <div>Loading...</div>;
     if (!user) return <div>No user found</div>;
 
     const handleSubmit = async (id) => {
+        // e.preventDefault();
         try {
             const response = await fetch(`/api/user/${id}/settings`, {
                 method: 'PUT',
@@ -66,6 +67,7 @@ const Settings = () => {
 
             const data = await response.json();
             console.log(data);
+            navigate(`/profile/${id}`);
 
         } catch (error) {
             console.log('No User Update');
