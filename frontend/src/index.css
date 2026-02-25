@@ -1,0 +1,202 @@
+/* ----- Navbar ----- */
+header .container {
+  width: 100%;
+  height: 70px;
+  background-color: #228b22;
+  padding-left: 10px;
+  box-shadow: 3px 3px;
+}
+header h1 {
+  text-shadow: 2px 2px black;
+  font-size: 45px;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-top: 5px;
+  color: white;
+}
+body, html {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+}
+a {
+  text-decoration: none;
+}
+a:visited {
+  color: white; /* Same color as the default to prevent purple */
+}
+
+/* ----- Login / Register ----- */
+.login, .register {
+  position: absolute;
+  top: 100px;
+  left: 400px;
+  right: auto;
+  padding: 10px 30px 30px 30px;
+  width: 400px;
+  height: auto;
+  margin: 50px auto auto auto;
+  background-color: #228b22;
+  box-shadow: 3px 3px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+
+.login h2, .register h2 {
+  text-align: center;
+  font-size: 30px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.login form, .register form {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login form p {
+  display: block;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.username, .password {
+  margin-bottom: 20px;
+}
+
+.login div label, .register div label {
+  font-size: 16px; /* Increase font size */
+  font-weight: bold; /* Make the text bold */
+  font-family: Arial, Helvetica, sans-serif;
+  display: block;
+} 
+
+.login input[id="username"], .login input[id="password"],
+.register input[id="username"], .register input[id="password"], 
+.register input[id="email"], .create input[id='name'],
+.create input[id='destination'], .create input[id='startDate'],
+.create input[id='endDate'], .create input[id='tripDescription'] {
+  width: 100%; /* Full width */
+  padding: 12px; /* Padding for larger clickable area */
+  font-size: 16px; /* Larger font size */
+  box-sizing: border-box; /* Include padding and border in element's total width and height */
+  box-shadow: 2px 2px;
+}
+
+.login button[type="submit"], .register button[type="submit"], .create button[type="submit"] {
+  width: 80%; /* Full width */
+  padding: 14px 20px; /* Padding for larger clickable area */
+  font-size: 16px; /* Larger font size */
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text */
+  border: none; /* Remove border */
+  cursor: pointer; /* Pointer cursor on hover */
+  display: block;
+  margin: 40px auto 10px auto;
+  box-shadow: 3px 3px black;
+ 
+}
+
+/* ----- Sidenav ----- */
+.sidenav {
+  min-height: 100vh;
+  width: 18vw;
+  background-color: #0e780e;
+  padding-top: 10px;
+  text-align: center;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  box-shadow: 2px 2px;
+} 
+
+/* ------ Friends ----- */
+.friends{
+  margin: 10px 40px 10px 20px;
+}
+
+/* ------ Friendbar ----- */
+.friendbar {
+  background-color: #0e780e;
+  width: 50vw;
+  width: 40vw;
+  height: 40px;
+  display: flex;
+  justify-content: space-between; /* Even spacing between elements */
+  align-items: center; /* Align items vertically */
+  padding: 0 20px; /* Add padding on the sides */
+  border-radius: 15px;
+  margin: 10px 10px 10px 10px; /* Center horizontally if needed */
+}
+
+.friendbar div {
+  flex: 1; /* Makes each child take up equal space */
+  text-align: center; /* Center text inside each div */
+}
+
+/* ----- Create Trip ----- */
+.create {
+  padding: 30px 30px 30px 30px;
+  width: 75vw;
+  height: auto;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+  background-color: antiquewhite;
+  box-shadow: 3px 3px;
+  margin: 10px auto auto 8px;
+}
+
+/* ------ Display Trips ----- */
+.dashboard, .trip-card, .user-details {
+  margin: 10px 10px 10px 10px;
+}
+.trips-grid {
+  display: grid;
+  width: 1000px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.trip-card {
+  width: 300px;
+  height: 200px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;
+  padding: 5px 5px 5px 5px;
+  background-color: antiquewhite;
+  box-shadow: 2px 2px black;
+  display: flex;
+} 
+
+.trip-info {
+  margin-left: 20px;
+}
+
+.viewTrip {
+  width: 75px;
+  height: 50px;
+  margin: 50px auto 10px 50px;
+}
+
+/* ----- Button / Link ----- */
+button { 
+  box-shadow: 1px 1px black;
+}
+
+h3 {
+  text-shadow: 1px 1px black;
+}
+
+/* ----- App ----- */
+.content {
+  display: flex; 
+  flex-direction: row;
+}
+
+.App {
+  background-color: #dff5d8;
+  min-height: 100vh;
+  min-width: 100vw;
+}

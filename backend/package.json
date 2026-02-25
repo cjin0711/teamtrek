@@ -1,0 +1,28 @@
+{
+  "name": "final-project-cjin0711",
+  "version": "1.0.0",
+  "description": "The content below is an example project proposal / requirements document. Replace the text below the lines marked \"__TODO__\" with details specific to your project. Remove the \"TODO\" lines.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"nodemon app.mjs\" \"npm start --prefix ../frontend\"",
+    "kill": "kill-port 3000 8000"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^9.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
