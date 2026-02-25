@@ -22,6 +22,8 @@ const FriendRequestSchema = new mongoose.Schema({
 
 // Trip Schema
 const TripSchema = new mongoose.Schema({
+  isPublic: { type: Boolean, required: true, default: true},
+  password: { type: String, default: null },
   organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   name: { type: String, required: true },
   destination: { type: String, required: true },
@@ -30,6 +32,7 @@ const TripSchema = new mongoose.Schema({
     end: { type: Date, required: true }
   },
   description: { type: String, required: true },
+  maxParticipants: { type: Number, required: true },
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 

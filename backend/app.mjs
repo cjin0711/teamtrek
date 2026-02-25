@@ -44,7 +44,6 @@ app.get('/api', (req, res) => {
   res.send("Redirect to Login");
 });
 
-
 app.get('/api/register', (req, res) => {
   res.send("Hello");
 });
@@ -74,9 +73,17 @@ app.post('/api/logout', (req, res) => {
   });
 });
 
-// // FRIENDS 
+// ----- User Search ----- //
+app.get('/api/search', auth.ensureAuthenticated, async (req, res) => {
+  try {
+    // const match = await User
+  }
+  catch {
 
-// view
+  }
+});
+
+// ----- Friends ----- //
 app.get('/api/friends', auth.ensureAuthenticated, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate('friends');
@@ -90,19 +97,6 @@ app.get('/api/friends', auth.ensureAuthenticated, async (req, res) => {
 }
 });
 
-// search
-app.get('/api/search', auth.ensureAuthenticated, async (req, res) => {
-  try {
-    // const match = await User
-  }
-  catch {
-
-  }
-});
-
-// FRIEND REQUESTS
-
-// pending
 app.get('/api/friendPending', auth.ensureAuthenticated, async (req, res) => {
   try {
     const pending = await FriendRequest.find({ recipient: req.user._id, status: 'pending' }).populate('recipient');
@@ -114,7 +108,6 @@ app.get('/api/friendPending', auth.ensureAuthenticated, async (req, res) => {
   }
 });
 
-// approve
 app.get('/api/friendApprove', auth.ensureAuthenticated, async (req, res) => {
   try {
     const pending = await FriendRequest.find({ recipient: req.user._id, status: 'approve' }).populate('sender');
@@ -126,8 +119,7 @@ app.get('/api/friendApprove', auth.ensureAuthenticated, async (req, res) => {
   }
 });
  
-
-// DASHBOARD
+// ----- Dashboard ----- //
 app.get('/api/dashboard', auth.ensureAuthenticated, async (req, res) => {
   try {
     // Fetch the user from the database using the ID from the session
@@ -145,7 +137,7 @@ app.get('/api/dashboard', auth.ensureAuthenticated, async (req, res) => {
 }
 });
 
-// SELF PROFILE
+// ----- User Profile ----- //
 app.get('/api/profile/', auth.ensureAuthenticated, async (req, res) => {
   const userId = req.user._id;
   try {
@@ -197,6 +189,7 @@ app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => 
 
 });
 
+// ----- Trip ----- //
 app.get('/api/trip/:id', auth.ensureAuthenticated, async (req, res) => {
   const tripId = req.params.id;
   console.log('API CALL FOR ID: ', tripId);
@@ -236,10 +229,54 @@ app.delete('/api/delete/:id', auth.ensureAuthenticated, async (req, res) => {
 });
 
 app.post('/api/create' , auth.ensureAuthenticated, async (req, res) => {
-  const {name, destination, startDate, endDate, description} = req.body;
+  const {visibility, password, name, destination, startDate, endDate, description, maxParticipants} = req.body;
+
+  const errors = [];
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0); 
+
+  // Validation
+  if (!name || name.trim() === '') {
+      errors.push('Trip name is required');
+  }
+  if (!destination || destination.trim() === '') {
+      errors.push('Trip destination is required');
+  }
+  if (!description || description.trim() === '') {
+      errors.push('Trip description is required');
+  }
+  if (!startDate) errors.push('Start date is required');
+
+  if (!endDate) errors.push('End date is required');
+
+  if (startDate && endDate) {
+     if (new Date(endDate) < new Date(startDate)) {
+        errors.push('End date must be after Start date')
+     }
+     if (currentDate > new Date(startDate)) {
+        errors.push('Start Date must be today or in the future');
+     }
+     if (currentDate > new Date(endDate)) {
+        errors.push('End Date must be today or in the future');
+     }
+  }
+
+  if (!maxParticipants || isNaN(maxParticipants) || maxParticipants < 1) {
+      errors.push('Max participants must be > 0')
+  }
+  if (visibility === false && (!password || password.trim() === '')) {
+      errors.push('Private trips require a password')
+  }
+
+  if (errors.length != 0) {
+      return res.status(400).json({ message: 'Trip validation failed', errors });
+  }
+
   try {
-        // Creates new Trip
+        // Create Trip
         const trip = new Trip({
+          isPublic: visibility,
+          password: password, 
           organizer: req.user._id,
           name: name,
           destination: destination,
@@ -247,7 +284,8 @@ app.post('/api/create' , auth.ensureAuthenticated, async (req, res) => {
             start: startDate,
             end: endDate
           },
-          description: description
+          description: description,
+          maxParticipants: maxParticipants
       });
 
       await trip.save();
