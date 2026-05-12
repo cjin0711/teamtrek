@@ -169,7 +169,7 @@ app.get('/api/user/:id', auth.ensureAuthenticated, async (req, res) => {
 
 app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => {
     const userId = req.params.id;
-    const { bio, email, phone, socials } = req.body;
+    const { bio, email, phone } = req.body;
     try {
         const user =  await User.findById(userId);
         if (!user) {
@@ -179,7 +179,6 @@ app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => 
         user.bio = bio;
         user.email = email;
         user.phone = phone;
-        user.socials = socials;
 
         await user.save();
         res.status(200).json({ message: 'User updated successfully', user });
@@ -191,11 +190,43 @@ app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => 
 });
 
 // ----- Trip ----- //
+app.get('/api/trip/search', auth.ensureAuthenticated, async(req, res) => {
+    const { q, startDate, endDate, maxParticipants } = req.query;
+
+    const query = {};
+
+    // query filters
+    if (q) {
+        query['$or'] = [
+            { name: { $regex: q, $options: 'i'} },
+            { destination: { $regex: q, $options: 'i'} }
+        ]
+    }
+    if (startDate) {
+        query['dates.start'] = { $gte: new Date(startDate) };
+    }
+    if (endDate) {
+        query['dates.end'] = { $lte: new Date(endDate) };
+    }
+    if (maxParticipants) {
+        query['maxParticipants'] = { $lte: Number(maxParticipants) };
+    }
+
+    try {
+        const trips = await Trip.find(query).populate('organizer', 'username');
+        res.json({ trips });
+    }
+    catch (error){
+        console.error('Error searching trips: ', error.message);
+        res.status(500).json({ message: 'Error Searching Trip' });
+    }
+}); 
+
 app.get('/api/trip/:id', auth.ensureAuthenticated, async (req, res) => {
     const tripId = req.params.id;
     console.log('API CALL FOR ID: ', tripId);
     try {
-        const trip = await Trip.findById(tripId);
+    const trip = await Trip.findById(tripId).populate('organizer', 'username');
         if (!trip) {
             return res.status(404).json({ message: 'Trip not found' });
         }
@@ -301,8 +332,6 @@ app.post('/api/trip/create', auth.ensureAuthenticated, async (req, res) => {
         req.user.trips.push(trip._id);  
         await req.user.save();  
 
-        
-
         res.status(201).json({ message: 'Trip Created Successfully' });
     }
     catch (error){
@@ -311,35 +340,3 @@ app.post('/api/trip/create', auth.ensureAuthenticated, async (req, res) => {
     }
 });
 
-
-app.get('/api/trip/search', auth.ensureAuthenticated, async(req, res) => {
-    const { q, startDate, endDate, maxParticipants } = req.query;
-
-    const query = {};
-
-    // query filters
-    if (q) {
-        query['$or'] = [
-            { name: { $regex: q, $options: 'i'} },
-            { destination: { $regex: q, $options: 'i'} }
-        ]
-    }
-    if (startDate) {
-        query['dates.start'] = { $gte: new Date(startDate) };
-    }
-    if (endDate) {
-        query['dates.end'] = { $lte: new Date(endDate) };
-    }
-    if (maxParticipants) {
-        query['maxParticipants'] = { $lte: Number(maxParticipants) };
-    }
-
-    try {
-        const trips = await Trip.find(query).populate('organizer', 'username');
-        res.json({ trips });
-    }
-    catch (error){
-        console.error('Error searching trips: ', error.message);
-        res.status(500).json({ message: 'Error Searching Trip' });
-    }
-}); 
