@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Sidenav = () => {
     const [user, setUser] = useState(null);
@@ -54,23 +54,32 @@ const Sidenav = () => {
         }
     };
     return (
-        <div className='sidenav'>
-            <Link to="/dashboard">
-                <h3>Dashboard</h3>
-            </Link>
-            <Link to={`/profile/${user._id}`}>
-                <h3>Profile</h3>
-            </Link>
-            <Link to="/friends">
-                <h3>Friends</h3>
-            </Link>
-            <Link to="/create">
-                <h3>Create Trip</h3>
-            </Link>
+        <aside className='sidenav'>
+            <div className="sidenav-header">
+                <p className="eyebrow">Navigator</p>
+                <h2>{user.username}</h2>
+            </div>
+            <nav className="sidenav-links">
+                <Link to="/dashboard">
+                    <h3>Dashboard</h3>
+                </Link>
+                <Link to={`/profile/${user._id}`}>
+                    <h3>Profile</h3>
+                </Link>
+                <Link to="/friends">
+                    <h3>Friends</h3>
+                </Link>
+                <Link to="/trip/search">
+                    <h3>Explore</h3>
+                </Link>
+                <Link to="/trip/create">
+                    <h3>Create Trip</h3>
+                </Link>
+            </nav>
             <button className="logout" onClick={handleLogout}>
                 <h4>Logout</h4>
             </button>
-        </div>
+        </aside>
     )
 }
 

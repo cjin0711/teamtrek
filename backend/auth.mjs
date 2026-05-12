@@ -1,6 +1,5 @@
 import passport from 'passport'
 import LocalStrategy from 'passport-local'
-import express from 'express'
 import session from 'express-session'
 import bcrypt from 'bcryptjs'
 import { User } from './db.mjs'

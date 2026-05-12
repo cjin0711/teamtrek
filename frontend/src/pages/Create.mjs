@@ -16,12 +16,12 @@ const Create = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/api/create', {
+            const response = await fetch('/api/trip/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ visibility, name, destination, startDate, endDate, description, maxParticipants }),
+                body: JSON.stringify({ visibility, password: visibility === 'false'? password : '', name, destination, startDate, endDate, description, maxParticipants }),
             });
             console.log('Response status:', response.status);
             console.log('Response headers:', response.headers);
@@ -42,8 +42,6 @@ const Create = () => {
             console.error('Error:', error);
         }
     };
-
-
 
     return (
         <div className="create">

@@ -9,6 +9,7 @@ import Friendbar from './components/Friendbar.mjs'
 import Dashboard from './pages/Dashboard.mjs'
 import Create from './pages/Create.mjs'
 import TripDetails from './pages/TripDetails.mjs'
+import Explore from './pages/Explore.mjs'
 import Profile from './pages/Profile.mjs'
 import Settings from './pages/Settings.mjs'
 import Friends from './pages/Friends.mjs'
@@ -43,7 +44,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Navbar/>
-        <div className = "content">
+        <div className="app-shell">
           <SidenavWrapper/>
           <div className="pages">
             <FriendnavWrapper/>
@@ -69,7 +70,7 @@ function App() {
               />
 
               {/* CREATE ROUTE */}
-              <Route path="/create"
+              <Route path="/trip/create"
                 element={<Create/>}
               />
 
@@ -92,7 +93,9 @@ function App() {
               <Route path="/profile/:id/settings"
                 element={<Settings/>}
               />
-              
+              <Route path="/trip/search"
+                element={<Explore/>}
+              />
             </Routes>
           </div>
         </div>

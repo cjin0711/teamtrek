@@ -45,7 +45,7 @@ const Friends = () => {
                 <input type="text"></input>
                 <input type="submit" value="Search"></input>
             </form>
-            <div classname="friends-grid">
+            <div className="friends-grid">
                 {friends.length === 0 ? (
                     <p>No friends found. Add some friends!</p>
                 ) : (

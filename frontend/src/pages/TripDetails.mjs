@@ -39,7 +39,7 @@ const TripDetails = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`/api/delete/${id}`, {
+            const response = await fetch(`/api/trip/${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) {
@@ -60,6 +60,7 @@ const TripDetails = () => {
                 <p>Start: {new Date(trip.dates.start).toLocaleDateString()}</p>
                 <p>End: {new Date(trip.dates.end).toLocaleDateString()}</p>
                 <p>Description: {trip.description}</p>
+                # WIP
                 <button onClick={() => handleDelete(trip._id)}>Delete Trip</button>
             </div>
         </div>

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 const Navbar = () => {
     return (
-        <header>
+        <header className="topbar">
             <div className="container">
                 <Link to="/">
                     <h1>teamtrek</h1>
