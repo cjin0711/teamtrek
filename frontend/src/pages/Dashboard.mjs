@@ -50,20 +50,19 @@ const Dashboard = () => {
             <h1>My Trips</h1>
             <div className="trips-grid">
                 {trips.length === 0 ? (
-                    <p>No trips found. Create your first trip!</p>
+                    <p>Create your first trip!</p>
                 ) : (
                     trips.map(trip => (
-                        <div key={trip._id} className="trip-card">
+                        <div
+                            key={trip._id}
+                            className="trip-card clickable-card"
+                            onClick={() => handleView(trip._id)}
+                        >
                             <div className="trip-info">
                                 <h2>{trip.name}</h2>
                                 <p>Destination: {trip.destination}</p>
                                 <p>Start: {new Date(trip.dates.start).toLocaleDateString()}</p>
                                 <p>End: {new Date(trip.dates.end).toLocaleDateString()}</p>
-                            </div>
-                            <div className="trip-actions">
-                                <button className='viewTrip' onClick={() => handleView(trip._id)}>
-                                    <h4>View</h4>
-                                </button>
                             </div>
                         </div>
                     ))

@@ -1,4 +1,4 @@
-import { useState, useEffect, setError } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const Settings = () => {
@@ -12,7 +12,6 @@ const Settings = () => {
     const [bio, setBio] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [socials, setSocials] = useState('');
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -33,7 +32,6 @@ const Settings = () => {
                 setBio(data.user.bio || '');
                 setEmail(data.user.email || '');
                 setPhone(data.user.phone || '');
-                setSocials(data.user.socials || []);
 
             } catch (error) {
                 setError(error.message);
@@ -48,22 +46,23 @@ const Settings = () => {
     if (loading) return <div>Loading...</div>;
     if (!user) return <div>No user found</div>;
 
-    const handleSubmit = async (id) => {
-        // e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
         try {
             const response = await fetch(`/api/user/${id}/settings`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ bio, email, phone, socials }),
+                body: JSON.stringify({ bio, email, phone }),
             });
             // First check if response is ok
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-            console.log(bio, email, phone, socials);
+            console.log(bio, email, phone);
 
             const data = await response.json();
             console.log(data);
@@ -78,7 +77,7 @@ const Settings = () => {
     return (
         <div className="create">
             <h2>Profile Settings</h2>
-            <form onSubmit={() => handleSubmit(user._id)}>
+            <form onSubmit={handleSubmit}>
                 <div className='email'>
                     <label htmlFor="email">Email:</label><br/>
                     <input type="text" id="email" value={email}
@@ -89,12 +88,6 @@ const Settings = () => {
                     <label htmlFor="phone">Phone:</label><br/>
                     <input type="text" id="phone" value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                    />
-                </div>
-                <div className='socials'>
-                    <label htmlFor="socials">Socials:</label><br/>
-                    <input type="text" id="socials" value={socials}
-                        onChange={(e) => setSocials(e.target.value)}
                     />
                 </div>
                 <div className='bio'>

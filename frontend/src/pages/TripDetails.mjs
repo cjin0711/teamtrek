@@ -56,11 +56,11 @@ const TripDetails = () => {
         <div className="trip-details">
             <div className="trip-info">
                 <h1>{trip.name}</h1>
+                <p>Trip Organizer: {trip.organizer?.username || 'Unknown'}</p>
                 <p>Destination: {trip.destination}</p>
                 <p>Start: {new Date(trip.dates.start).toLocaleDateString()}</p>
                 <p>End: {new Date(trip.dates.end).toLocaleDateString()}</p>
                 <p>Description: {trip.description}</p>
-                # WIP
                 <button onClick={() => handleDelete(trip._id)}>Delete Trip</button>
             </div>
         </div>

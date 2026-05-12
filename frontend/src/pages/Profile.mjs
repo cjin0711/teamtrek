@@ -50,13 +50,12 @@ const Profile = () => {
         <div className="user-details">
             {/* <div>Viewing details for user ID: {id}</div> */}
             <div className="user-info">
-                <h1>Hello {user.username}!</h1>
+                <h3>{user.username}</h3>    
                 <hr></hr>
                 <h4>Email: {user.email}</h4>
                 {/* <p>First Name: {user.firstName}</p>
                 <p>Last Name: {user.lastName}</p> */}
                 <h4>Phone: {user.phone}</h4>
-                <h4>{user.socials}</h4>
                 <h4>Bio: {user.bio}</h4>
             </div>
             <button onClick={() => handleEdit(user._id)}>Edit Profile</button>
