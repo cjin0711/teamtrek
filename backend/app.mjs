@@ -226,13 +226,103 @@ app.get('/api/trip/:id', auth.ensureAuthenticated, async (req, res) => {
     const tripId = req.params.id;
     console.log('API CALL FOR ID: ', tripId);
     try {
-    const trip = await Trip.findById(tripId).populate('organizer', 'username');
+        const trip = await Trip.findById(tripId)
+            .populate('organizer', 'username')
+            .populate('participants', 'username');
+
         if (!trip) {
             return res.status(404).json({ message: 'Trip not found' });
         }
+
+        if(trip.organizer)
+
         res.json({trip: trip});
+
     } catch (error) {
         console.error('Error fetching trip:', error.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.post('/api/trip/:id/join', auth.ensureAuthenticated, async (req, res) => {
+    const tripId = req.params.id;
+
+    try {
+        const trip = await Trip.findById(tripId);
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' });
+        }
+
+        const userId = req.user._id.toString();
+        const isParticipant = trip.participants.some(
+            (participantId) => participantId.toString() === userId
+        );
+
+        if (isParticipant) {
+            return res.status(400).json({ message: 'User already joined this trip' });
+        }
+
+        if (trip.participants.length >= trip.maxParticipants) {
+            return res.status(400).json({ message: 'Trip is full' });
+        }
+
+        trip.participants.push(req.user._id);
+        await trip.save();
+
+        if (!req.user.trips.some((userTripId) => userTripId.toString() === tripId)) {
+            req.user.trips.push(trip._id);
+            await req.user.save();
+        }
+
+        const updatedTrip = await Trip.findById(tripId)
+            .populate('organizer', 'username')
+            .populate('participants', 'username');
+
+        res.json({ message: 'Trip joined successfully', trip: updatedTrip });
+    } catch (error) {
+        console.error('Error joining trip:', error.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.post('/api/trip/:id/leave', auth.ensureAuthenticated, async (req, res) => {
+    const tripId = req.params.id;
+
+    try {
+        const trip = await Trip.findById(tripId);
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' });
+        }
+
+        if (trip.organizer.toString() === req.user._id.toString()) {
+            return res.status(400).json({ message: 'Organizer cannot leave their own trip' });
+        }
+
+        const isParticipant = trip.participants.some(
+            (participantId) => participantId.toString() === req.user._id.toString()
+        );
+
+        if (!isParticipant) {
+            return res.status(400).json({ message: 'User is not part of this trip' });
+        }
+
+        await Trip.findByIdAndUpdate(tripId, {
+            $pull: { participants: req.user._id }
+        });
+
+        req.user.trips = req.user.trips.filter(
+            (userTripId) => userTripId.toString() !== tripId
+        );
+        await req.user.save();
+
+        const updatedTrip = await Trip.findById(tripId)
+            .populate('organizer', 'username')
+            .populate('participants', 'username');
+
+        res.json({ message: 'Trip left successfully', trip: updatedTrip });
+
+    } catch (error) {
+        console.error('Error leaving trip:', error.message);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -250,6 +340,12 @@ app.delete('/api/trip/:id', auth.ensureAuthenticated, async (req, res) => {
         if (trip.organizer.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'Unauthorized to delete this trip' });
         }
+
+        // remove stale reference to deleted trip
+        await User.updateMany(
+            { trips: trip._id },
+            { $pull: { trips: trip._id } }
+        );
 
         // Delete the trip
         await trip.deleteOne();
@@ -311,19 +407,20 @@ app.post('/api/trip/create', auth.ensureAuthenticated, async (req, res) => {
     }
 
     try {
-          // Create Trip
-          const trip = new Trip({
+        // Create Trip
+        const trip = new Trip({
             isPublic: visibility,
             password: visibility === 'false'? hash : '', 
             organizer: req.user._id,
             name: name,
             destination: destination,
             dates : {
-              start: startDate,
-              end: endDate
+                start: startDate,
+                end: endDate
             },
             description: description,
-            maxParticipants: maxParticipants
+            maxParticipants: maxParticipants,
+            participants: [req.user._id]
         });
 
         await trip.save();
@@ -339,4 +436,3 @@ app.post('/api/trip/create', auth.ensureAuthenticated, async (req, res) => {
         res.status(500).json({ message: 'Error Creating Trip' });
     }
 });
-

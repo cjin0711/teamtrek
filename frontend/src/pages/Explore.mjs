@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatTripDate } from '../utils/date.mjs';
 
 const Explore = () => {
     const [query, setQuery] = useState('');
@@ -7,12 +8,14 @@ const Explore = () => {
     const [endDate, setEndDate] = useState('');
     const [maxParticipants, setMaxParticipants] = useState('');
     const [showFilters, setShowFilters] = useState(false);
+    const [searched, setSearched] = useState(false); 
     const [results, setResults] = useState([]);
     const navigate = useNavigate();
 
     const handleSearch = async (e) => {
         e.preventDefault();
         console.log('SEARCH QUERIED');
+        setSearched(true);
 
         const params = new URLSearchParams();
         if (query.trim()) {
@@ -106,7 +109,9 @@ const Explore = () => {
                 </div>
             )}
             <div className="trips-grid">
-                {results.length === 0 ? (
+                {!searched ? (
+                    <p>Search for a trip!</p>
+                ) : results.length === 0 ? (
                     <p>No trips found.</p>
                 ) : (
                     results.map(result => (
@@ -118,8 +123,8 @@ const Explore = () => {
                             <div className="trip-info">
                                 <h3>{result.name}</h3>
                                 <p>Destination: {result.destination}</p>
-                                <p>Start: {new Date(result.dates.start).toLocaleDateString()}</p>
-                                <p>End: {new Date(result.dates.end).toLocaleDateString()}</p>
+                                <p>Start: {formatTripDate(result.dates.start)}</p>
+                                <p>End: {formatTripDate(result.dates.end)}</p>
                             </div>
                         </div>
                     ))

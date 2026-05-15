@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { countries } from '../data/countries.mjs';
+import { citiesByCountry } from '../data/citiesByCountry.mjs';
 
 const Create = () => {
-    const [visibility, setVisibility] = useState('true')
+    const [visibility, setVisibility] = useState('true');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
-    const [destination, setDestination] = useState('');
+    const [city, setCity] = useState('');
+    const [country, setCountry] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [description, setDescription] = useState('');
@@ -13,30 +16,44 @@ const Create = () => {
     const [errors, setErrors] = useState([]);
     const navigate = useNavigate();
 
+    const cityOptions = country ? (citiesByCountry[country] || []) : [];
+    const hasPresetCities = cityOptions.length > 0;
+
+    const handleCountryChange = (e) => {
+        setCountry(e.target.value);
+        setCity('');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const destination = [city.trim(), country].filter(Boolean).join(', ');
+
         try {
             const response = await fetch('/api/trip/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ visibility, password: visibility === 'false'? password : '', name, destination, startDate, endDate, description, maxParticipants }),
+                body: JSON.stringify({
+                    visibility,
+                    password: visibility === 'false' ? password : '',
+                    name,
+                    destination,
+                    startDate,
+                    endDate,
+                    description,
+                    maxParticipants,
+                }),
             });
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-                    // First check if response is ok
+
             if (!response.ok) {
                 const data = await response.json();
-                setErrors(data.errors)
+                setErrors(data.errors || ['Trip creation failed']);
                 return;
             }
-            console.log(name, destination, startDate, endDate, description);
 
-            const data = await response.json();
-            console.log(data);
+            await response.json();
             navigate('/dashboard');
-
         } catch (error) {
             console.log('No Trip Creation');
             console.error('Error:', error);
@@ -49,14 +66,16 @@ const Create = () => {
             {errors.length > 0 && (
                 <ul>
                     {errors.map((error, index) => (
-                        <li key={index} style={{ color: 'red '}}>{error}</li>
+                        <li key={index} style={{ color: 'red ' }}>{error}</li>
                     ))}
                 </ul>
             )}
             <form onSubmit={handleSubmit}>
                 <div className='visiblity'>
-                    <label htmlFor="visiblity">Visibility:</label>
-                    <select name="visibility" 
+                    <label htmlFor="visibility">Visibility:</label>
+                    <select
+                        id="visibility"
+                        name="visibility"
                         value={visibility}
                         onChange={(e) => setVisibility(e.target.value)}
                     >
@@ -66,58 +85,116 @@ const Create = () => {
                 </div>
                 {visibility === 'false' && (
                     <div className="password">
-                        <label htmlFor="password">Password: </label>
-                        <input type="password" id="password" value={password}
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
                 )}
                 <div className='tripName'>
-                    <label htmlFor="name">Trip Name:</label><br/>
-                    <input type="text" id="name" value={name}
+                    <label htmlFor="name">Trip Name:</label>
+                    <input
+                        type="text"
+                        id="name"
+                        value={name}
                         onChange={(e) => setName(e.target.value)}
-                        required 
+                        required
                     />
+                </div>
+                <div className='country'>
+                    <label htmlFor="country">Country:</label>
+                    <select
+                        id="country"
+                        value={country}
+                        onChange={handleCountryChange}
+                        required
+                    >
+                        <option value="">Select a country</option>
+                        {countries.map((countryName) => (
+                            <option key={countryName} value={countryName}>
+                                {countryName}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className='destination'>
-                    <label htmlFor="destination">Destination:</label><br/>
-                    <input type="text" id="destination" value={destination}
-                        onChange={(e) => setDestination(e.target.value)}
-                        required 
-                    />
+                    <label htmlFor="city">Destination City:</label>
+                    {hasPresetCities ? (
+                        <select
+                            id="city"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            required
+                            disabled={!country}
+                        >
+                            <option value="">Select a city</option>
+                            {cityOptions.map((cityName) => (
+                                <option key={cityName} value={cityName}>
+                                    {cityName}
+                                </option>
+                            ))}
+                        </select>
+                    ) : (
+                        <input
+                            type="text"
+                            id="city"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            placeholder={country ? 'Enter a city' : 'Select a country first'}
+                            required
+                            disabled={!country}
+                        />
+                    )}
                 </div>
                 <div className='startDate'>
-                    <label htmlFor="startDate">Start Date:</label><br/>
-                    <input type="date" id="startDate" value={startDate}
+                    <label htmlFor="startDate">Start Date:</label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
                 <div className='endDate'>
-                    <label htmlFor="endDate">End Date:</label><br/>
-                    <input type="date" id="endDate" value={endDate}
+                    <label htmlFor="endDate">End Date:</label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        required 
+                        required
                     />
-                </div> 
+                </div>
                 <div className='tripDescription'>
-                    <label htmlFor="tripDescription">Description:</label><br/>
-                    <input type="text" id="tripDescription" value={description}
+                    <label htmlFor="tripDescription">Description:</label>
+                    <input
+                        type="text"
+                        id="tripDescription"
+                        value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
                 <div className='maxParticipants'>
-                    <label htmlFor="maxParticipants">Team Size:</label><br/>
-                    <input type="number" min='1' id="maxParticipants" value={maxParticipants}
+                    <label htmlFor="maxParticipants">Team Size:</label>
+                    <input
+                        type="number"
+                        min='1'
+                        max='25'
+                        id="maxParticipants"
+                        value={maxParticipants}
                         onChange={(e) => setMaxSize(e.target.value)}
-                        required 
+                        required
                     />
                 </div>
                 <button type="submit">Create Trip</button>
             </form>
         </div>
     );
-}
+};
 
 export default Create;
