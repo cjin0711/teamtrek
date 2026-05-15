@@ -139,7 +139,7 @@ app.get('/api/dashboard', auth.ensureAuthenticated, async (req, res) => {
 });
 
 // ----- User Profile ----- //
-app.get('/api/profile/', auth.ensureAuthenticated, async (req, res) => {
+app.get('/api/me', auth.ensureAuthenticated, async (req, res) => {
     const userId = req.user._id;
     try {
         const user = await User.findById(userId);
@@ -246,6 +246,7 @@ app.get('/api/trip/:id', auth.ensureAuthenticated, async (req, res) => {
 
 app.post('/api/trip/:id/join', auth.ensureAuthenticated, async (req, res) => {
     const tripId = req.params.id;
+    const { password } = req.body;
 
     try {
         const trip = await Trip.findById(tripId);
@@ -264,6 +265,13 @@ app.post('/api/trip/:id/join', auth.ensureAuthenticated, async (req, res) => {
 
         if (trip.participants.length >= trip.maxParticipants) {
             return res.status(400).json({ message: 'Trip is full' });
+        }
+
+        if (!trip.isPublic) {
+            const isMatch = await bcrypt.compare(password || '', trip.password || '');
+            if (!isMatch) {
+                return res.status(403).json({ message: 'Incorrect trip password' });
+            }
         }
 
         trip.participants.push(req.user._id);

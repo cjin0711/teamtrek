@@ -10,7 +10,7 @@ const Sidenav = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await fetch('/api/profile');
+                const response = await fetch('/api/me');
                 if (!response.ok && response.status !== 401) {
                     throw new Error('Failed to fetch profile');
                 }
