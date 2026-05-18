@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import defaultAvatar from '../uploads/default_avatar.jpg';
 
 const Settings = () => {
     
@@ -11,7 +12,8 @@ const Settings = () => {
 
     const [bio, setBio] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const [displayName, setDisplayName] = useState('');
+    const [hometown, setHometown] = useState('');
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -31,7 +33,8 @@ const Settings = () => {
 
                 setBio(data.user.bio || '');
                 setEmail(data.user.email || '');
-                setPhone(data.user.phone || '');
+                setDisplayName(data.user.displayName || '');
+                setHometown(data.user.hometown || '');
 
             } catch (error) {
                 setError(error.message);
@@ -43,8 +46,15 @@ const Settings = () => {
         fetchUser();
     }, [id, navigate]);
 
-    if (loading) return <div>Loading...</div>;
-    if (!user) return <div>No user found</div>;
+    if (loading) {
+        return (
+            <div className="profile-loading">
+                <div className="profile-spinner" />
+            </div>
+        );
+    }
+    if (error) return <div className="profile-error">{error}</div>;
+    if (!user) return <div className="profile-error">No user found</div>;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -55,14 +65,14 @@ const Settings = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ bio, email, phone }),
+                body: JSON.stringify({ bio, email, displayName, hometown }),
             });
             // First check if response is ok
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-            console.log(bio, email, phone);
+            console.log(bio, email, displayName, hometown);
 
             const data = await response.json();
             console.log(data);
@@ -74,31 +84,76 @@ const Settings = () => {
         }
     }
 
+    const profileName = displayName || user.displayName || user.username;
+    const joined = user.createdAt
+        ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        : 'Unknown';
+
     return (
-        <div className="create">
-            <h2>Profile Settings</h2>
-            <form onSubmit={handleSubmit}>
-                <div className='email'>
-                    <label htmlFor="email">Email:</label><br/>
-                    <input type="text" id="email" value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+        <div className="user-details profile-page">
+            <div className="profile-container settings-container">
+                <div className="user-info profile-card settings-card">
+                    <img
+                        src={defaultAvatar}
+                        alt={`${profileName}'s avatar`}
+                        className="profile-avatar"
                     />
+                    <h3>{profileName}</h3>
+                    <h4>@{user.username}</h4>
+                    <h4>Member since {joined}</h4>
+
+                    <hr />
+
+                    <form onSubmit={handleSubmit} className="settings-form">
+                        <div className="displayName">
+                            <label htmlFor="displayName">Display Name</label>
+                            <input
+                                type="text"
+                                id="displayName"
+                                value={displayName}
+                                onChange={(e) => setDisplayName(e.target.value)}
+                            />
+                        </div>
+                        <div className="email">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="text"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div className="hometown">
+                            <label htmlFor="hometown">Hometown / Based In</label>
+                            <input
+                                type="text"
+                                id="hometown"
+                                value={hometown}
+                                onChange={(e) => setHometown(e.target.value)}
+                            />
+                        </div>
+                        <div className="bio">
+                            <label htmlFor="bio">Bio</label>
+                            <textarea
+                                id="bio"
+                                value={bio}
+                                onChange={(e) => setBio(e.target.value)}
+                                rows="4"
+                            />
+                        </div>
+                        <div className="settings-actions">
+                            <button
+                                type="button"
+                                className="filter-toggle"
+                                onClick={() => navigate(`/profile/${id}`)}
+                            >
+                                Cancel
+                            </button>
+                            <button type="submit">Save Changes</button>
+                        </div>
+                    </form>
                 </div>
-                <div className='phone'>
-                    <label htmlFor="phone">Phone:</label><br/>
-                    <input type="text" id="phone" value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                    />
-                </div>
-                <div className='bio'>
-                    <label htmlFor="bio">Bio:</label><br/>
-                    <textarea id="bio" value={bio}
-                        onChange={(e) => setBio(e.target.value)}
-                        rows="4" cols="50"
-                    />
-                </div>
-                <button type="submit">Save</button>
-            </form>
+            </div>
         </div>
     );
 }

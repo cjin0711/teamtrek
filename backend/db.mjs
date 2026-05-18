@@ -3,14 +3,15 @@ import mongoose from 'mongoose';
 // User Schema
 const UserSchema = new mongoose.Schema({
   username: { type: String, required: true },
+  displayName: { type: String },
   passwordHash: { type: String, required: true },
   email: { type: String, required: true },
-  phone: { type: String },
+  hometown: { type: String },
   bio: { type: String },
   socials: { type: String},
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   trips: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }]
-});
+}, { timestamps: true });
 
 const FriendRequestSchema = new mongoose.Schema({
   sender: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},

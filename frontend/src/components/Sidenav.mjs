@@ -69,6 +69,9 @@ const Sidenav = () => {
                 <Link to="/friends">
                     <h3>Friends</h3>
                 </Link>
+                <Link to="/user/search">
+                    <h3>Search User</h3>
+                </Link>
                 <Link to="/trip/search">
                     <h3>Explore</h3>
                 </Link>

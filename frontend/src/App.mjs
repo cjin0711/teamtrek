@@ -5,7 +5,6 @@ import Login from './pages/Login.mjs'
 import Register from './pages/Register.mjs'
 import Navbar from './components/Navbar.mjs'
 import Sidenav from './components/Sidenav.mjs'
-import Friendbar from './components/Friendbar.mjs'
 import Dashboard from './pages/Dashboard.mjs'
 import Create from './pages/Create.mjs'
 import TripDetails from './pages/TripDetails.mjs'
@@ -14,6 +13,8 @@ import Explore from './pages/Explore.mjs'
 import Profile from './pages/Profile.mjs'
 import Settings from './pages/Settings.mjs'
 import Friends from './pages/Friends.mjs'
+import UserSearch from './pages/UserSearch.mjs'
+
 
 function SidenavWrapper() {
   // for getting user's current route location
@@ -29,17 +30,6 @@ function SidenavWrapper() {
   return <Sidenav />;
 }
 
-function FriendnavWrapper() {
-  const location = useLocation();
-  const friendRoutes = ['/friends', '/pending', '/approve'];
-
-  if (!friendRoutes.includes(location.pathname)) {
-    return null;
-  }
-
-  return <Friendbar />;
-}
-
 function App() {
   return (
     <div className="App">
@@ -48,7 +38,6 @@ function App() {
         <div className="app-shell">
           <SidenavWrapper/>
           <div className="pages">
-            <FriendnavWrapper/>
             <Routes>
               {/* HOME ROUTE */}
               <Route path="/"
@@ -88,6 +77,11 @@ function App() {
               {/* PROFILE ROUTE */}
               <Route path="/profile/:id"
                 element={<Profile/>}
+              />
+
+              {/* USER SEARCH */}
+              <Route path="/user/search"
+                element={<UserSearch/>}
               />
 
               {/* FRIENDS ROUTE */}

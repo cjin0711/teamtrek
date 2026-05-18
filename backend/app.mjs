@@ -74,49 +74,24 @@ app.post('/api/logout', (req, res) => {
     });
 });
 
-// ----- User Search ----- //
-app.get('/api/userSearch', auth.ensureAuthenticated, async (req, res) => {
-  try {
-    // const match = await User
-  }
-  catch {
+// ----- Search User -----
+app.get('/api/user/search', auth.ensureAuthenticated, async (req, res) => {
+    const username = req.query.q?.trim();
 
-  }
-});
+    if (!username) {
+        return res.status(400).json({ message: 'Query parameter q is required' });
+    }
 
-// ----- Friends ----- //
-app.get('/api/friends', auth.ensureAuthenticated, async (req, res) => {
     try {
-      const user = await User.findById(req.user._id).populate('friends');
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
-      res.json({ authorized: true, friends: user.friends });
-    } catch (error) {
-      console.error('Error fetching friends:', error.message);
-      res.status(500).json({ message: 'Server error' });
-    }
-});
+        const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const users = await User.find({
+            username: { $regex: escapedUsername, $options: 'i' }
+        }).select('_id username displayName profilePicture');
 
-app.get('/api/friendPending', auth.ensureAuthenticated, async (req, res) => {
-    try {
-      const pending = await FriendRequest.find({ recipient: req.user._id, status: 'pending' }).populate('recipient');
-      return json({ pending: pending.recipient});
-    }
-    catch(error) {
-      console.error('Error fetching pending friend requests:', error.message);
-      res.status(500).json({ message: 'Server error' });
-    }
-});
-
-app.get('/api/friendApprove', auth.ensureAuthenticated, async (req, res) => {
-    try {
-      const pending = await FriendRequest.find({ recipient: req.user._id, status: 'approve' }).populate('sender');
-      return json({ pending: pending.recipient});
-    }
-    catch(error) {
-      console.error('Error fetching friend requests for approval:', error.message);
-      res.status(500).json({ message: 'Server error' });
+        return res.status(200).json({ users });
+    } catch (e) {
+        console.error('Error searching user:', e);
+        return res.status(500).json({ message: 'Error searching user' });
     }
 });
  
@@ -156,11 +131,31 @@ app.get('/api/me', auth.ensureAuthenticated, async (req, res) => {
 app.get('/api/user/:id', auth.ensureAuthenticated, async (req, res) => {
     const userId = req.params.id;
     try {
-        const user = await User.findById(userId);
+        const user = await User.findById(userId)
+            .populate('friends', '_id username')
+            .populate('trips', 'dates');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.json({ user: user });
+
+        const selfId = req.user._id.toString();
+        const isSelf = user._id.toString() === selfId;
+        const isFriend = user.friends.some(
+            (friend) => friend._id.toString() === selfId
+        );
+        const now = new Date();
+        const completed = (user.trips || []).filter((trip) => {
+            const endDate = trip?.dates?.end;
+            return endDate && new Date(endDate) < now;
+        }).length;
+
+        res.json({
+            user,
+            isSelf,
+            isFriend,
+            completed,
+            authorized: true,
+        });
     } catch (error) {
         console.error('Error fetching user:', error.message);
         res.status(500).json({ message: 'Server error' });
@@ -169,16 +164,17 @@ app.get('/api/user/:id', auth.ensureAuthenticated, async (req, res) => {
 
 app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => {
     const userId = req.params.id;
-    const { bio, email, phone } = req.body;
+    const { bio, email, displayName, hometown } = req.body;
     try {
         const user =  await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         } 
-
+  
         user.bio = bio;
         user.email = email;
-        user.phone = phone;
+        user.displayName = displayName;
+        user.hometown = hometown;
 
         await user.save();
         res.status(200).json({ message: 'User updated successfully', user });
@@ -188,6 +184,182 @@ app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => 
     }
 
 });
+
+// ----- FRIENDS -----
+
+app.get('/api/friends', auth.ensureAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).populate(
+            'friends',
+            '_id username displayName email bio hometown'
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({
+            friends: user.friends || [],
+        });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error loading friends' });
+    }
+});
+
+app.post('/api/friends/request/:id', auth.ensureAuthenticated, async (req, res) => {
+    const senderId = req.user.id;
+    const recipientId = req.params.id;
+
+    try {
+        // Case: User Doesn't Exist
+        const recipientExists = await User.findById(recipientId);
+        if (!recipientExists) {
+            return res.status(404).json({ message: 'User not found'});
+        }
+
+        // Case: Requesting Self
+        if (senderId === recipientId) {
+            return res.status(400).json({ message: 'Can not send request to self'});
+        }
+
+        // Case: Already Friends
+        const currentUser = await User.findById(senderId);
+        const alreadyFriends = currentUser.friends.some(id => id.toString() === recipientId.toString());
+        if (alreadyFriends) {
+            return res.status(400).json({ message: 'Already friends'});
+        }
+
+        // Case: Request already exists (either way)
+        const existingRequest = await FriendRequest.findOne({
+            $or: [
+                { sender: senderId, recipient: recipientId, status: 'pending' },
+                { sender: recipientId, recipient: senderId, status: 'pending' }
+            ]
+        });
+        if (existingRequest) {
+            return res.status(400).json({ message: 'Friend request already exists'});
+        }
+
+        await FriendRequest.create({
+            sender: senderId,
+            recipient: recipientId,
+            status: 'pending'
+        });
+
+        return res.status(201).json({ message: 'Friend request sent!'});
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error sending friend request'});
+    }
+
+});
+
+app.patch('/api/friends/accept/:id', auth.ensureAuthenticated, async (req, res) => {
+    const senderId = req.params.id;
+    const recipientId = req.user.id;
+
+    try {
+        const existingRequest = await FriendRequest.findOne({
+            sender: senderId,
+            recipient: recipientId,
+            status: 'pending'
+        });
+
+        // Case: Friend request doesn't exist
+        if (!existingRequest) {
+            return res.status(400).json({ message: 'Can not find friend request'});
+        }
+
+        // update fromUser friendlist
+        await User.updateOne(
+            { _id: senderId },
+            { $addToSet: { friends: recipientId } }
+        );
+
+        // update toUser friendlist
+        await User.updateOne(
+            { _id: recipientId },
+            { $addToSet: { friends: senderId } }
+        );
+
+        await FriendRequest.deleteOne({ _id: existingRequest._id });
+
+        return res.status(200).json({ message: 'Friend request accepted' });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error accepting friend request' });
+    }
+});
+
+app.patch('/api/friends/reject/:id', auth.ensureAuthenticated, async (req, res) => {
+    const senderId = req.params.id;
+    const recipientId = req.user.id;
+
+    try {
+        const existingRequest = await FriendRequest.findOne({
+            sender: senderId,
+            recipient: recipientId,
+            status: 'pending'
+        });
+
+        if (!existingRequest) {
+            return res.status(400).json({ message: 'Can not find friend request' });
+        }
+
+        await FriendRequest.deleteOne({ _id: existingRequest._id });
+
+        return res.status(200).json({ message: 'Friend request rejected' });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error rejecting friend request' });
+    }
+});
+
+app.patch('/api/friends/remove/:id', auth.ensureAuthenticated, async (req, res) => {
+    const friendId = req.params.id;
+    const self = req.user;
+
+    try {
+        // Remove from 'their' side
+        const friend = await User.findById(friendId);
+        if (!friend) {
+            return res.status(404).json({ message: 'Friend not found - could not remove' });
+        }
+        friend.friends.pull(self.id)
+        await friend.save();
+
+        // Remove from 'your' side
+        self.friends.pull(friendId);
+        await req.user.save();
+
+        return res.status(200).json({ message: 'Friend removed' });
+
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error removing friend' });
+    }
+})
+
+app.get('/api/friends/requestStatus', auth.ensureAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const [outgoingPending, incomingPending] = await Promise.all([
+            FriendRequest.find({ sender: userId, status: 'pending' }).select('recipient'),
+            FriendRequest.find({ recipient: userId, status: 'pending' }).select('sender')
+        ]);
+
+        return res.status(200).json({
+            outgoingPending: outgoingPending.map(request => request.recipient),
+            incomingPending: incomingPending.map(request => request.sender),
+        });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Error fetching friend status' });
+    }
+});
+
 
 // ----- Trip ----- //
 app.get('/api/trip/search', auth.ensureAuthenticated, async(req, res) => {
