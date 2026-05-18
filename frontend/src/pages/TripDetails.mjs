@@ -117,6 +117,14 @@ const TripDetails = () => {
         }
     };
 
+    const handleEditClick = async (tripId) => {
+        try {
+            navigate(`/trip/${tripId}/edit`)
+        } catch (error) {
+            setError(error.message);
+        }
+    }
+
     const isOrganizer = currentUser && trip.organizer?._id === currentUser._id;
     const isParticipant = currentUser && trip.participants.some(
         (participant) => participant._id === currentUser._id
@@ -126,12 +134,12 @@ const TripDetails = () => {
         <div className="trip-details">
             <div className="trip-info">
                 <h1>{trip.name}</h1>
+                {trip.isPublic ? (<h3>Public</h3>) : (<h3>Private</h3>)}
                 <p>Trip Organizer: {trip.organizer?.username || 'Unknown'}</p>
                 <p>Destination: {trip.destination}</p>
                 <p>Start: {formatTripDate(trip.dates.start)}</p>
                 <p>End: {formatTripDate(trip.dates.end)}</p>
                 <p>Description: {trip.description}</p>
-                {!trip.isPublic && <p>This is a private trip.</p>}
                 <h3>Participants</h3>
                 <ol>
                     {trip.participants.map((participant) => (
@@ -143,7 +151,10 @@ const TripDetails = () => {
                 </ol>
                 {error && <p className="modal-error">{error}</p>}
                 {isOrganizer ? (
-                    <button onClick={() => handleDelete(trip._id)}>Delete Trip</button>
+                    <div className="organizer-buttons">
+                        <button onClick={() => handleDelete(trip._id)}>Delete Trip</button>
+                        <button onClick={() => handleEditClick(trip._id)}>Edit Trip</button>
+                    </div>
                 ) : isParticipant ? (
                     <button onClick={handleLeave}>Leave Trip</button>
                 ) : (

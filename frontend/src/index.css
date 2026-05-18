@@ -576,6 +576,11 @@ h1, h2, h3, h4, p {
   margin-top: 1rem;
 }
 
+.organizer-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;

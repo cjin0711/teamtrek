@@ -52,7 +52,7 @@ const Create = () => {
                 return;
             }
 
-            await response.json();
+            // await response.json();
             navigate('/dashboard');
         } catch (error) {
             console.log('No Trip Creation');

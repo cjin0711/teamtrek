@@ -444,3 +444,95 @@ app.post('/api/trip/create', auth.ensureAuthenticated, async (req, res) => {
         res.status(500).json({ message: 'Error Creating Trip' });
     }
 });
+
+app.patch('/api/trip/:id/', auth.ensureAuthenticated, async (req, res) => {
+    const tripId = req.params.id;
+    const { visibility, password, name, destination, startDate, endDate, description, maxParticipants } = req.body;
+
+    const errors = [];
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    if (!name || name.trim() === '') {
+        errors.push('Trip name is required');
+    }
+    if (!destination || destination.trim() === '') {
+        errors.push('Trip destination is required');
+    }
+    if (!description || description.trim() === '') {
+        errors.push('Trip description is required');
+    }
+    if (!startDate) errors.push('Start date is required');
+    if (!endDate) errors.push('End date is required');
+
+    if (startDate && endDate) {
+        if (new Date(endDate) < new Date(startDate)) {
+            errors.push('End date must be after Start date');
+        }
+        if (currentDate > new Date(startDate)) {
+            errors.push('Start Date must be today or in the future');
+        }
+        if (currentDate > new Date(endDate)) {
+            errors.push('End Date must be today or in the future');
+        }
+    }
+
+    if (!maxParticipants || isNaN(maxParticipants) || maxParticipants < 1) {
+        errors.push('Max participants must be > 0');
+    }
+
+    try {
+        const trip = await Trip.findById(tripId);
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' });
+        }
+
+        if (trip.organizer.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Unauthorized to edit this trip' });
+        }
+
+        if (Number(maxParticipants) < trip.participants.length) {
+            errors.push('Max participants cannot be less than the current participant count');
+        }
+
+        const willBePrivate = visibility === 'false';
+        if (willBePrivate && !trip.password && (!password || password.trim() === '')) {
+            errors.push('Private trips require a password');
+        }
+
+        if (errors.length !== 0) {
+            return res.status(400).json({ message: 'Trip validation failed', errors });
+        }
+
+        let nextPassword = trip.password || '';
+        if (willBePrivate && password && password.trim() !== '') {
+            const salt = bcrypt.genSaltSync(10);
+            nextPassword = bcrypt.hashSync(password, salt);
+        }
+        if (!willBePrivate) {
+            nextPassword = '';
+        }
+
+        trip.isPublic = visibility === 'true';
+        trip.password = nextPassword;
+        trip.name = name;
+        trip.destination = destination;
+        trip.dates = {
+            start: startDate,
+            end: endDate
+        };
+        trip.description = description;
+        trip.maxParticipants = Number(maxParticipants);
+
+        await trip.save();
+
+        const updatedTrip = await Trip.findById(tripId)
+            .populate('organizer', 'username')
+            .populate('participants', 'username');
+
+        res.json({ message: 'Trip updated successfully', trip: updatedTrip });
+    } catch (error) {
+        console.error('Error updating trip:', error.message);
+        res.status(500).json({ message: 'Error Updating Trip' });
+    }
+})
