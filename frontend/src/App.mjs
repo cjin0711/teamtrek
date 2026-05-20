@@ -14,6 +14,8 @@ import Profile from './pages/Profile.mjs'
 import Settings from './pages/Settings.mjs'
 import Friends from './pages/Friends.mjs'
 import UserSearch from './pages/UserSearch.mjs'
+import ProfileFriends from './pages/ProfileFriends.mjs'
+import ProfileTrips from './pages/ProfileTrips.mjs'
 
 
 function SidenavWrapper() {
@@ -77,6 +79,16 @@ function App() {
               {/* PROFILE ROUTE */}
               <Route path="/profile/:id"
                 element={<Profile/>}
+              />
+
+              {/* PROFILE FRIENDS ROUTE */}
+              <Route path="/profile/:id/friends"
+                element={<ProfileFriends/>}
+              />
+
+              {/* PROFILE TRIPS ROUTE */}
+              <Route path="/profile/:id/trips"
+                element={<ProfileTrips/>}
               />
 
               {/* USER SEARCH */}

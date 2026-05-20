@@ -424,7 +424,7 @@ h1, h2, h3, h4, p {
 }
 
 .friends-grid {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 320px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   justify-content: start;
 }
 
@@ -442,6 +442,15 @@ h1, h2, h3, h4, p {
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
   transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.friend-card {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.8rem;
+  min-height: 180px;
+  padding: 1.2rem 1rem;
 }
 
 .trip-card:hover,
@@ -464,9 +473,9 @@ h1, h2, h3, h4, p {
 }
 
 .user-card-avatar {
-  width: 64px;
-  height: 64px;
-  flex: 0 0 64px;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(46, 159, 117, 0.16);
@@ -474,10 +483,21 @@ h1, h2, h3, h4, p {
 }
 
 .user-card-handle {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.2rem;
   color: var(--accent-primary);
   font-size: 1rem;
   font-weight: 700;
+}
+
+.friend-info {
+  width: 100%;
+  text-align: center;
+}
+
+.user-card-name {
+  margin-bottom: 0;
+  color: var(--text-soft);
+  font-size: 0.92rem;
 }
 
 .trip-info p,
@@ -687,6 +707,48 @@ h1, h2, h3, h4, p {
   margin-top: 0.35rem;
 }
 
+.create-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.create-card-shell {
+  width: 100%;
+  max-width: 760px;
+}
+
+.create-form-card {
+  width: 100%;
+  max-width: 560px;
+}
+
+.create-trip-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+  align-items: start;
+}
+
+.create-trip-form .tripName,
+.create-trip-form .tripDescription,
+.create-trip-form button {
+  grid-column: 1 / -1;
+}
+
+.create-trip-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.create-trip-form button {
+  justify-self: center;
+  width: auto;
+  min-width: 180px;
+  margin-top: 0.35rem;
+}
+
 .dashboard,
 .friends,
 .search,
@@ -775,7 +837,8 @@ h1, h2, h3, h4, p {
 }
 
 .reject-friend-btn,
-.friends-icon-btn-reject {
+.friends-icon-btn-reject,
+.friends-remove-btn {
   background: linear-gradient(135deg, #d9685a 0%, #b94a3d 100%);
   color: #fff7f5;
 }
@@ -893,6 +956,10 @@ h1, h2, h3, h4, p {
   }
 
   .create form {
+    grid-template-columns: 1fr;
+  }
+
+  .create-trip-form {
     grid-template-columns: 1fr;
   }
 

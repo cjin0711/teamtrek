@@ -62,7 +62,7 @@ const UserSearch = () => {
                             />
                             <div className="friend-info">
                                 <h3 className="user-card-handle">@{user.username}</h3>
-                                <p>Name: {user.displayName || user.username}</p>
+                                <p className="user-card-name">{user.displayName || user.username}</p>
                             </div>
                         </div>
                     ))

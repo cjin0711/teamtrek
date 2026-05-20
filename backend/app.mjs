@@ -162,6 +162,81 @@ app.get('/api/user/:id', auth.ensureAuthenticated, async (req, res) => {
     }
 });
 
+app.get('/api/user/:id/friends', auth.ensureAuthenticated, async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await User.findById(userId).populate(
+            'friends',
+            '_id username displayName email bio hometown'
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const selfId = req.user._id.toString();
+        const isSelf = user._id.toString() === selfId;
+        const isFriend = user.friends.some(
+            (friend) => friend._id.toString() === selfId
+        );
+
+        if (!isSelf && !isFriend) {
+            return res.status(403).json({ message: 'Only friends can view this friends list' });
+        }
+
+        return res.status(200).json({
+            user,
+            friends: user.friends || [],
+            isSelf,
+            isFriend,
+        });
+    } catch (error) {
+        console.error('Error fetching profile friends:', error.message);
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.get('/api/user/:id/trips', auth.ensureAuthenticated, async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await User.findById(userId)
+            .populate('friends', '_id username')
+            .populate({
+                path: 'trips',
+                populate: {
+                    path: 'organizer',
+                    select: 'username',
+                },
+            });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const selfId = req.user._id.toString();
+        const isSelf = user._id.toString() === selfId;
+        const isFriend = user.friends.some(
+            (friend) => friend._id.toString() === selfId
+        );
+
+        if (!isSelf && !isFriend) {
+            return res.status(403).json({ message: 'Only friends can view these trips' });
+        }
+
+        return res.status(200).json({
+            user,
+            trips: user.trips || [],
+            isSelf,
+            isFriend,
+        });
+    } catch (error) {
+        console.error('Error fetching profile trips:', error.message);
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
+
 app.put('/api/user/:id/settings', auth.ensureAuthenticated, async (req, res) => {
     const userId = req.params.id;
     const { bio, email, displayName, hometown } = req.body;
@@ -207,7 +282,7 @@ app.get('/api/friends', auth.ensureAuthenticated, async (req, res) => {
     }
 });
 
-app.post('/api/friends/request/:id', auth.ensureAuthenticated, async (req, res) => {
+app.post('/api/friends/:id/request', auth.ensureAuthenticated, async (req, res) => {
     const senderId = req.user.id;
     const recipientId = req.params.id;
 
@@ -255,7 +330,7 @@ app.post('/api/friends/request/:id', auth.ensureAuthenticated, async (req, res) 
 
 });
 
-app.patch('/api/friends/accept/:id', auth.ensureAuthenticated, async (req, res) => {
+app.patch('/api/friends/:id/accept', auth.ensureAuthenticated, async (req, res) => {
     const senderId = req.params.id;
     const recipientId = req.user.id;
 
@@ -292,7 +367,7 @@ app.patch('/api/friends/accept/:id', auth.ensureAuthenticated, async (req, res) 
     }
 });
 
-app.patch('/api/friends/reject/:id', auth.ensureAuthenticated, async (req, res) => {
+app.patch('/api/friends/:id/reject', auth.ensureAuthenticated, async (req, res) => {
     const senderId = req.params.id;
     const recipientId = req.user.id;
 

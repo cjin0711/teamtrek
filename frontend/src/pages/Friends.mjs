@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import defaultAvatar from '../uploads/default_avatar.jpg';
 
@@ -31,7 +31,7 @@ const Friends = () => {
     const [error, setError] = useState('');
     const [confirmRemove, setConfirmRemove] = useState(null);
 
-    const fetchUsersByIds = async (ids) => {
+    const fetchUsersByIds = useCallback(async (ids) => {
         if (!ids.length) {
             return [];
         }
@@ -49,9 +49,9 @@ const Friends = () => {
         );
 
         return users.filter(Boolean);
-    };
+    }, []);
 
-    const loadFriendsData = async () => {
+    const loadFriendsData = useCallback(async () => {
         setLoading(true);
         setError('');
 
@@ -87,15 +87,15 @@ const Friends = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [fetchUsersByIds]);
 
     useEffect(() => {
         loadFriendsData();
-    }, []);
+    }, [loadFriendsData]);
 
     const handleAccept = async (userId) => {
         try {
-            const res = await apiFetch(`/api/friends/accept/${userId}`, {
+            const res = await apiFetch(`/api/friends/${userId}/accept`, {
                 method: 'PATCH',
             });
             if (!res.ok) {
@@ -109,7 +109,7 @@ const Friends = () => {
 
     const handleReject = async (userId) => {
         try {
-            const res = await apiFetch(`/api/friends/reject/${userId}`, {
+            const res = await apiFetch(`/api/friends/${userId}/reject`, {
                 method: 'PATCH',
             });
             if (!res.ok) {
@@ -255,8 +255,7 @@ const Friends = () => {
                             />
                             <div className="friend-info">
                                 <h3 className="user-card-handle">@{user.username}</h3>
-                                <p>Email: {user.email || 'No email listed'}</p>
-                                <p>Bio: {user.bio || 'No bio yet'}</p>
+                                <p className="user-card-name">{user.displayName || user.username}</p>
                                 {renderActions(user)}
                             </div>
                         </div>

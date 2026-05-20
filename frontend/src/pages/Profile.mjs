@@ -78,7 +78,7 @@ const Profile = () => {
     const handleAddFriend = async () => {
         try {
             setError(null);
-            const response = await apiFetch(`/api/friends/request/${id}`, {
+            const response = await apiFetch(`/api/friends/${id}/request`, {
                 method: 'POST',
             });
             const data = await response.json();
@@ -96,7 +96,7 @@ const Profile = () => {
     const handleAcceptFriend = async () => {
         try {
             setError(null);
-            const response = await apiFetch(`/api/friends/accept/${id}`, {
+            const response = await apiFetch(`/api/friends/${id}/accept`, {
                 method: 'PATCH',
             });
             const data = await response.json();
@@ -119,7 +119,7 @@ const Profile = () => {
     const handleRejectFriend = async () => {
         try {
             setError(null);
-            const response = await apiFetch(`/api/friends/reject/${id}`, {
+            const response = await apiFetch(`/api/friends/${id}/reject`, {
                 method: 'PATCH',
             });
             const data = await response.json();
@@ -180,7 +180,12 @@ const Profile = () => {
                         <button
                             type="button"
                             className="profile-stat"
-                            onClick={() => navigate('/dashboard')}
+                            onClick={() => {
+                                if (isSelf || isFriend) {
+                                    navigate(isSelf ? '/dashboard' : `/profile/${id}/trips`);
+                                }
+                            }}
+                            disabled={!(isSelf || isFriend)}
                         >
                             <span className="profile-stat-value">{tripsCompleted ?? '-'}</span>
                             <span className="profile-stat-label">Completed Trips</span>
@@ -188,7 +193,12 @@ const Profile = () => {
                         <button
                             type="button"
                             className="profile-stat"
-                            onClick={() => navigate('/friends')}
+                            onClick={() => {
+                                if (isSelf || isFriend) {
+                                    navigate(isSelf ? '/friends' : `/profile/${id}/friends`);
+                                }
+                            }}
+                            disabled={!(isSelf || isFriend)}
                         >
                             <span className="profile-stat-value">{user.friends?.length ?? 0}</span>
                             <span className="profile-stat-label">Friends</span>
